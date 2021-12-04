@@ -1,0 +1,32 @@
+graph {
+    graph[ordering="out"];
+    Node0[shape="circle", label="21"];
+    Node1[shape="circle", label="16"];
+    Node2[shape="circle", label="40"];
+    Node3[shape="circle", label="15"];
+    Node4[shape="circle", label="17"];
+    Node5[shape="circle", label="31"];
+    Node6[shape="circle", label="50"];
+    Node7[shape="circle", label="0"];
+    Node8[shape="circle", label="0"];
+    Node9[shape="circle", label="0"];
+    Node10[shape="circle", label="0"];
+    Node11[shape="circle", label="0"];
+    Node12[shape="circle", label="0"];
+    Node13[shape="circle", label="0"];
+    Node14[shape="circle", label="0"];
+    Node0 -- Node1;
+    Node0 -- Node2;
+    Node1 -- Node3;
+    Node1 -- Node4;
+    Node2 -- Node5;
+    Node2 -- Node6;
+    Node3 -- Node14;
+    Node3 -- Node14;
+    Node4 -- Node14;
+    Node4 -- Node14;
+    Node5 -- Node14;
+    Node5 -- Node14;
+    Node6 -- Node14;
+    Node6 -- Node14;
+}
