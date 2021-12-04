@@ -1,6 +1,6 @@
 cp main.cpp ./main_std.cpp
-sed -i 's/ft::map/std::map/g' main_std.cpp
-sed -i 's/ft::pair/std::pair/g' main_std.cpp
+sed -i '' 's/ft::map/std::map/g' main_std.cpp
+sed -i '' 's/ft::pair/std::pair/g' main_std.cpp
 clang++ main_std.cpp -std=c++98 -o std_map
 echo "- - - - - - - - - - - - - - - stl"
 time ./std_map > std_output

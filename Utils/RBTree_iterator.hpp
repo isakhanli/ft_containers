@@ -145,6 +145,15 @@ namespace ft{
 		}
 
 
+		//for const_iterator
+		operator	rb_tree_iterator<const T, Node> (void){
+			return rb_tree_iterator<const T, Node>(ptr, root, nil);
+		}
+
+
+		node_pointer getPtr(){
+			return ptr;
+		}
 
 
 //		pointer findNext(){

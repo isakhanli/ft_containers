@@ -6,7 +6,6 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.20"
@@ -39,7 +38,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "containers::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-containers-Debug-b9ea7e48328fda355144.json",
+					"jsonFile" : "target-containers-Debug-1d7cd0473a3efc6fc3e7.json",
 					"name" : "containers",
 					"projectIndex" : 0
 				}
@@ -49,12 +48,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/isakhanli/Desktop/containers/cmake-build-debug",
-		"source" : "/home/isakhanli/Desktop/containers"
+		"build" : "/Users/dchin/Desktop/ft_containers/cmake-build-debug",
+		"source" : "/Users/dchin/Desktop/ft_containers"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 3
+		"minor" : 2
 	}
 }

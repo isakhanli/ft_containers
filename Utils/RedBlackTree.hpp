@@ -75,15 +75,15 @@ public:
 	}
 
 
-	pointer getRoot(){
+	pointer getRoot() const{
 		return root;
 	}
 
-	pointer getNil(){
+	pointer getNil() const{
 		return nil;
 	}
 
-	pointer getMin(){
+	pointer getMin() const{
 		if (root == NULL || root == nil)
 			return nil;
 
@@ -105,8 +105,7 @@ public:
 	}
 
 
-	pointer search(const value_type &key){
-//		return search_helper(root, key);
+	pointer search(const value_type &key) const{
 
 		pointer tmp = root;
 		while (tmp != nil){
@@ -117,7 +116,7 @@ public:
 			else
 				return tmp;
 		}
-		return NULL;
+		return nil;
 	}
 
 	pointer craeteNode(const value_type &val){
@@ -134,6 +133,7 @@ public:
 
 	void leftRotate(pointer x){
 		pointer  y = x->right;
+
 		x->right = y->left;
 		if (y->left != nil)
 			y->left->parent = x;
@@ -151,6 +151,7 @@ public:
 
 	void rightRotate(pointer x){
 		pointer  y = x->left;
+
 		x->left = y->right;
 		if (y->right != nil)
 			y->right->parent = x;
@@ -277,6 +278,210 @@ public:
 			recursiveCleer(root);
 		_size = 0;
 		root = nil;
+	}
+
+
+	//erase
+
+	bool erase(const value_type &key){
+		return deleteNodeHelper(root, key);
+
+	}
+
+	pointer getMinimum(pointer node){
+		if (node == nil || node == NULL)
+			return nil;
+
+		while (node->left != nil)
+			node = node->left;
+
+		return node;
+	}
+
+
+	void fixDeletion(pointer node){
+		pointer sibling;
+
+		while (node != root && node->color == BLACK){
+			if (node == node->parent->left){
+				sibling = node->parent->right;
+				if (sibling->color == RED){
+					sibling->color = BLACK;
+					node->parent->color = RED;
+					leftRotate(node->parent);
+					sibling = node->parent->right;
+				}
+				if (sibling->color == BLACK && sibling->right->color == BLACK){
+					sibling->color = RED;
+					node = node->parent;
+				}else{
+					if (sibling->right->color == BLACK){
+						sibling->left->color = BLACK;
+						sibling->color = RED;
+						rightRotate(sibling);
+						sibling = node->parent->right;
+					}
+					sibling->color = node->parent->color;
+					node->parent->color = BLACK;
+					sibling->right->color = BLACK;
+					leftRotate(node->parent);
+					node = root;
+				}
+			}else{
+				sibling = node->parent->left;
+				if (sibling->color == RED){
+					sibling->color = BLACK;
+					node->parent->color = RED;
+					rightRotate(node->parent);
+					sibling = node->parent->left;
+				}
+
+				if (sibling->left->color == BLACK && sibling->right->color == BLACK){
+					sibling->color = BLACK;
+					node = node->parent;
+				}else{
+					if (sibling->left->color == BLACK){
+						sibling->right->color = BLACK;
+						sibling->color = RED;
+						leftRotate(sibling);
+						sibling = node->parent->left;
+					}
+
+					sibling->color = node->parent->color;
+					node->parent->color = BLACK;
+					sibling->left->color = BLACK;
+					rightRotate(node->parent);
+					node = root;
+				}
+
+			}
+		}
+		node->color = BLACK;
+	}
+
+	// to replace node to be deleted with one of its children
+	void rbReplace(pointer x, pointer y){
+
+		/*
+			Case 1
+		 	x = 100
+		 	y = 150
+		 			100 			150
+					/\       =>     /\
+				  50  150         50  150
+
+			Case 2
+		 	x = 50
+		 	y = 70
+
+		           100                 100
+		           /\                  /\
+		         50  150     =>      70  150
+		         /\                  /\
+		       20  70              20  70
+
+
+		    Case 3
+		 	x = 150
+		 	y = 170
+
+		           100                 100
+		           /\                  /\
+		         50  150     =>      70  170
+		              /\                  /\
+		           120  170           120   170
+
+		 */
+
+
+		if (x->parent == NULL)				//Case1
+			root = y;
+		else if (x == x->parent->left)		//Case2
+			x->parent->left = y;
+		else								//Case3
+			x->parent->right = y;
+
+		y->parent = x->parent;
+	}
+
+	bool deleteNodeHelper(pointer node, const value_type &key){
+		pointer x, y, z;
+		z = nil;
+
+		//find the node to be deleted
+		while (node != nil){
+			if (comp(node->val.first, key.first))
+				node = node->right;
+			else if (comp(key.first, node->val.first))
+				node = node->left;
+			else {
+				z = node;
+				break;
+			}
+		}
+
+		//not a node with such key
+		if (z == nil)
+			return false;
+
+		y = z;
+		int originalColor = y->color;
+
+		if (y->left == nil){
+			x = z->right;
+			rbReplace(z, z->right);
+		}else if (z->right == nil){
+			x = z->left;
+			rbReplace(z, z->left);
+		}else{
+			y = getMinimum(z->right);
+			originalColor = y->color;
+			x = y->right;
+
+			/*
+				 z = 200
+				 y = 300
+
+				 CASE 1
+							100
+							/ \
+						  50   200     	<- node to be deleted (200)
+								/\
+							 150   300
+				 CASE 2
+
+							100
+							 / \
+						   50   200     	<- node to be deleted (200)
+								/\
+							 150   300
+									/\
+								250	  350
+
+
+				 */
+
+			if (y->parent == z)  			// CASE 1
+				x->parent = y;
+			else{							// CASE 2
+				rbReplace(y, y->right);
+				y->right = z->right;
+				y->right->parent = y;
+			}
+
+			rbReplace(z, y);
+			y->left = z->left;
+			y->left->parent = y;
+			y->color = z->color;
+		}
+
+		alloc.destroy(z);
+		alloc.deallocate(z, 1);
+
+		if(originalColor == BLACK)
+			fixDeletion(x);
+
+		return true;
 	}
 
 

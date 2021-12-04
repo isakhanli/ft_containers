@@ -107,9 +107,66 @@ void testModifiers(){
 
 }
 
+void testDelete(){
+	ft::map<int, int> a;
+
+	a.insert(ft::pair<int, int>(10,3));
+	a.insert(ft::pair<int, int>(5,632));
+	a.insert(ft::pair<int, int>(20,2));
+	a.insert(ft::pair<int, int>(1,2));
+	a.insert(ft::pair<int, int>(18,192));
+	a.insert(ft::pair<int, int>(12,12900));
+	a.insert(ft::pair<int, int>(22,99));
+	a.insert(ft::pair<int, int>(3,2));
+	a.insert(ft::pair<int, int>(4,2));
+
+	ft::map<int, int>::iterator first = a.begin();
+	ft::map<int, int>::iterator  last = a.end();
+
+
+	last--;
+	last--;
+	last--;
+
+
+	a.erase(first, last);
+//	a.erase(1);
+//	a.erase(10);
+//	a.erase(3);
+
+	for (ft::map<int, int>::iterator it = a.begin(); it != a.end(); it++)
+		std::cout << it->first << std::endl;
+}
+
+void testLookUp(){
+	std::cout  << "- - - - - - - - - - - - - - - - - - - count()"  << std::endl;
+
+	ft::map<int, int> a;
+
+	a.insert(ft::pair<int, int>(10,3));
+	a.insert(ft::pair<int, int>(5,632));
+	a.insert(ft::pair<int, int>(20,2));
+	a.insert(ft::pair<int, int>(1,2));
+	a.insert(ft::pair<int, int>(18,192));
+	a.insert(ft::pair<int, int>(12,12900));
+	a.insert(ft::pair<int, int>(22,99));
+	a.insert(ft::pair<int, int>(3,2));
+	a.insert(ft::pair<int, int>(4,2));
+
+	std::cout << a.count(4545) << std::endl;
+	std::cout << a.count(1) << std::endl;
+
+	std::cout  << "- - - - - - - - - - - - - - - - - - - lower upper equal bounds()"  << std::endl;
+
+	std::cout << a.lower_bound(18) << std::endl;
+
+
+}
 
 int main(){
 //	testElementAccess();
 //	testCapacity();
-	testModifiers();
+//	testModifiers();
+//	testDelete();
+	testLookUp();
 }
