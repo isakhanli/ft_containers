@@ -80,7 +80,7 @@ namespace ft{
 
 		reverse_iterator		rbegin() const{
 			return       	reverse_iterator(end());
-		}
+		} 
 
 		reverse_iterator		rend() const{
 			return       	reverse_iterator(begin());
