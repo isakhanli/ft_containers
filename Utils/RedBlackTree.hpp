@@ -3,109 +3,108 @@
 
 #include <iostream>
 #include "../Utils/utility.hpp"
-#include "../Utils/RBTree_iterator.hpp"
-#include "../Utils/reverse_iterator.hpp"
 
 enum Color{
 	BLACK,
 	RED
 };
 
+
 template <class T>
 class RBNode{
 public:
-	typedef T	value_type;
-
+	typedef T		value_type;
 	RBNode 			*left;
 	RBNode 			*right;
 	RBNode 			*parent;
 	value_type 		val;
 	int 			color;
 
-	RBNode():
-		left(NULL), right(NULL), parent(NULL), val(), color(BLACK){}
+		/* * * * * * * * * * * * * * * * * * *
+		* 		   CANONICAL FORM
+		* * * * * * * * * * * * * * * * * * */
 
-	RBNode(const value_type &data) : left(), right(), val(data), color(BLACK){
+	RBNode(): left(NULL), right(NULL), parent(NULL), val(), color(BLACK){
 
 	}
 
-	RBNode(const value_type &data, RBNode *left, RBNode *right, RBNode *parent, int color)
-		: left(left), right(right), val(data), color(color){
+	RBNode(const value_type &data) : left(NULL), right(NULL), val(data), color(BLACK){
+
+	}
+
+	RBNode(const value_type &val, RBNode *left, RBNode *right, RBNode *parent, int color)
+		: left(left), right(right), val(val), color(color){
 
 	}
 
 	~RBNode(){};
+
+	RBNode(const RBNode &other)
+		: left(other.left), right(other.right), parent(other.parent), val(other.val), color(other.color){
+	}
+
+	RBNode& operator=(const RBNode &other){
+		if (this == &other)
+			return *this;
+		this->left = other->left;
+		this->right = other->right;
+		this->parent = other->parent;
+		this->val = other->val;
+		this->color = other->color;
+	}
 };
+
 
 template <class T, class Compare = std::less<T>, class Allocator = std::allocator<T> >
 class RBTree{
 public:
-	typedef T														value_type;
-	typedef std::size_t												size_type;
-	typedef Compare													key_compare;
-//	typedef Allocator												_alloc;
-	typedef typename Allocator::template rebind<RBNode<T> >::other	_alloc;
-
-	typedef typename _alloc::pointer								pointer;
-	typedef ft::rb_tree_iterator<value_type, RBNode<value_type> >						iterator;
-	typedef ft::rb_tree_iterator<const value_type, RBNode<value_type> >					const_iterator;
-	typedef ft::reverse_iterator<const_iterator>					const_reverse_iterator;
-
-
-//	typedef RBNode<value_type> *pointer;
-
+	typedef T																value_type;
+	typedef RBNode<T>														Node;
+	typedef std::size_t														size_type;
+	typedef Compare															key_compare;
+	typedef typename Allocator::template rebind<RBNode<T> >::other			allocator_type;
+	typedef typename allocator_type::pointer								pointer;
 
 	pointer 			root;
 	pointer 			nil;
 	size_type			_size;
-	_alloc 				alloc;
+	allocator_type 		alloc;
 	key_compare 		comp;
 
+
+		/* * * * * * * * * * * * * * * * * * *
+		* 		   CANONICAL FORM
+		* * * * * * * * * * * * * * * * * * */
 
 	RBTree(key_compare const& cmp = key_compare()) : comp(cmp){
 		_size = 0;
 		nil = alloc.allocate(1);
-		alloc.construct(nil, RBNode<T>());
-//		nil->parent = NULL;
-//		nil->right = NULL;
-//		nil->left = NULL;
-//		nil->color = BLACK;
+		alloc.construct(nil, Node());
 		root = nil;
-		_size = 0;
+	}
+
+	~RBTree(){
+	}
+
+	RBTree (const RBTree &other){
+		*this = other;
+	}
+
+	RBTree& operator=(const RBTree& other){
+//		this->root = other.root;
+		this->nil = other.nil;
+		this->_size = other._size;
+		this->alloc = other.alloc;
+		this->comp = other.comp;
+		return *this;
 	}
 
 
-	pointer getRoot() const{
-		return root;
-	}
+		/* * * * * * * * * * * * * * * * * * *
+		* 		   OTHER FUNCTIONS
+		* * * * * * * * * * * * * * * * * * */
 
-	pointer getNil() const{
-		return nil;
-	}
-
-	pointer getMin() const{
-		if (root == NULL || root == nil)
-			return nil;
-
-		pointer temp = root;
-		while (temp->left != nil)
-			temp = temp->left;
-		return temp;
-	}
-
-	pointer search_helper(pointer node, const value_type &key) const{
-		if (node == nil)
-			return node;
-		else if(comp(key.first, node->val.first ))
-			return search_helper(node->left, key);
-		else if (comp(node->val.first, key.first))
-			return search_helper(node->right, key);
-		else
-			return node;
-	}
-
-
-	pointer search(const value_type &key) const{
+	pointer find(const value_type &key) const{
 
 		pointer tmp = root;
 		while (tmp != nil){
@@ -119,53 +118,67 @@ public:
 		return nil;
 	}
 
-	pointer craeteNode(const value_type &val){
-		pointer newNode = alloc.allocate(1);
-//		alloc.construct(newNode, val);
-		alloc.construct(newNode, RBNode<T>(val, nil, nil, NULL, RED));
-//		newNode->parent = NULL;
-//		newNode->right = nil;
-//		newNode->left = nil;
-//		newNode->color = RED;
-
-		return newNode;
+	bool size() const{
+		return _size;
 	}
 
-	void leftRotate(pointer x){
-		pointer  y = x->right;
-
-		x->right = y->left;
-		if (y->left != nil)
-			y->left->parent = x;
-		y->parent = x->parent;
-		if (x->parent == NULL)
-			this->root = y;
-		else if (x == x->parent->left)
-			x->parent->left = y;
-		else
-			x->parent->right = y;
-
-		y->left = x;
-		x->parent = y;
+	size_type max_size() const{
+		return alloc.max_size();
 	}
 
-	void rightRotate(pointer x){
-		pointer  y = x->left;
-
-		x->left = y->right;
-		if (y->right != nil)
-			y->right->parent = x;
-		y->parent = x->parent;
-		if (x->parent == NULL)
-			this->root = y;
-		else if (x == x->parent->right)
-			x->parent->right = y;
-		else
-			x->parent->left = y;
-
-		y->right = x;
-		x->parent = y;
+	void clear(){
+		if (root != nil)
+			recursiveCleer(root);
+		_size = 0;
+		root = nil;
 	}
+
+
+		/* * * * * * * * * * * * * * * * * * *
+		* 		          INSERT
+		* * * * * * * * * * * * * * * * * * */
+
+
+		bool insert( const value_type& value ) {
+			pointer newNode = createNode(value);
+
+			pointer y = NULL;
+			pointer x = this->root;
+			while (x != nil) {
+				y = x;
+				if (comp(newNode->val.first, x->val.first))
+					x = x->left;
+				else if (comp(x->val.first, newNode->val.first))
+					x = x->right;
+				else{
+					alloc.destroy(newNode);
+					alloc.deallocate(newNode, 1);
+					return false;
+				}
+			}
+
+			newNode->parent = y;
+
+			if (y == NULL)
+				root = newNode;
+			else if (comp(newNode->val.first, y->val.first))
+				y->left = newNode;
+			else
+				y->right = newNode;
+
+			_size++;
+
+			if (newNode->parent == NULL) {
+				newNode->color = BLACK;
+				return true;
+			}
+
+			if (newNode->parent->parent == NULL)
+				return true;
+
+			fixInsertion(newNode);
+			return  true;
+		}
 
 	void fixInsertion(pointer node){
 		pointer uncle;
@@ -209,95 +222,91 @@ public:
 		root->color = BLACK;
 	}
 
+		/* * * * * * * * * * * * * * * * * * *
+		* 		     DELETE
+		* * * * * * * * * * * * * * * * * * */
 
 
-	bool insert( const value_type& value ) {
-		pointer newNode = craeteNode(value);
+		bool erase(const value_type &key){
+			pointer node = root;
+			pointer x, y, z;
+			z = nil;
 
-		pointer y = NULL;
-		pointer x = this->root;
-		while (x != nil) {
-			y = x;
-			if (comp(newNode->val.first, x->val.first))
-				x = x->left;
-			else if (comp(x->val.first, newNode->val.first))
-				x = x->right;
-			else{
-				alloc.destroy(newNode);
-				alloc.deallocate(newNode, 1);
-				return false;
+			//find the node to be deleted
+			while (node != nil){
+				if (comp(node->val.first, key.first))
+					node = node->right;
+				else if (comp(key.first, node->val.first))
+					node = node->left;
+				else {
+					z = node;
+					break;
+				}
 			}
-		}
 
-		newNode->parent = y;
+			//not a node with such key
+			if (z == nil)
+				return false;
 
-		if (y == NULL)
-			root = newNode;
-		else if (comp(newNode->val.first, y->val.first))
-			y->left = newNode;
-		else
-			y->right = newNode;
+			y = z;
+			int originalColor = y->color;
 
-		_size++;
+			if (y->left == nil){
+				x = z->right;
+				rbReplace(z, z->right);
+			}else if (z->right == nil){
+				x = z->left;
+				rbReplace(z, z->left);
+			}else{
+				y = getMin(z->right);
+				originalColor = y->color;
+				x = y->right;
 
-		if (newNode->parent == NULL) {
-			newNode->color = BLACK;
+				/*
+					 z = 200
+					 y = 300
+
+					 CASE 1
+								100
+								/ \
+							  50   200     	<- node to be deleted (200)
+									/\
+								 150   300
+					 CASE 2
+
+								100
+								 / \
+							   50   200     	<- node to be deleted (200)
+									/\
+								 150   300
+										/\
+									250	  350
+
+
+					 */
+
+				if (y->parent == z)  			// CASE 1
+					x->parent = y;
+				else{							// CASE 2
+					rbReplace(y, y->right);
+					y->right = z->right;
+					y->right->parent = y;
+				}
+
+				rbReplace(z, y);
+				y->left = z->left;
+				y->left->parent = y;
+				y->color = z->color;
+			}
+
+			alloc.destroy(z);
+			alloc.deallocate(z, 1);
+
+			if(originalColor == BLACK)
+				fixDeletion(x);
+
 			return true;
 		}
-
-		if (newNode->parent->parent == NULL)
-			return true;
-
-		fixInsertion(newNode);
-		return  true;
-	}
-
-	bool isEmpty() const{
-		return (_size == 0);
-	}
-
-	bool size() const{
-		return _size;
-	}
-
-	size_type max_size() const{
-		return alloc.max_size();
-	}
-
-	void recursiveCleer(pointer root){
-		if (root != nil){
-			recursiveCleer(root->left);
-			recursiveCleer(root->right);
-			alloc.destroy(root);
-			alloc.deallocate(root, 1);
-		}
-	}
-
-	void clear(){
-		if (root != nil)
-			recursiveCleer(root);
-		_size = 0;
-		root = nil;
-	}
-
-
-	//erase
-
-	bool erase(const value_type &key){
-		return deleteNodeHelper(root, key);
-
-	}
-
-	pointer getMinimum(pointer node){
-		if (node == nil || node == NULL)
-			return nil;
-
-		while (node->left != nil)
-			node = node->left;
-
-		return node;
-	}
-
 
 	void fixDeletion(pointer node){
 		pointer sibling;
@@ -359,6 +368,48 @@ public:
 		node->color = BLACK;
 	}
 
+
+		/* * * * * * * * * * * * * * * * * * *
+		* 	 		Helper Functions
+		* * * * * * * * * * * * * * * * * * */
+
+
+	void leftRotate(pointer x){
+		pointer  y = x->right;
+
+		x->right = y->left;
+		if (y->left != nil)
+			y->left->parent = x;
+		y->parent = x->parent;
+		if (x->parent == NULL)
+			this->root = y;
+		else if (x == x->parent->left)
+			x->parent->left = y;
+		else
+			x->parent->right = y;
+
+		y->left = x;
+		x->parent = y;
+	}
+
+	void rightRotate(pointer x){
+		pointer  y = x->left;
+
+		x->left = y->right;
+		if (y->right != nil)
+			y->right->parent = x;
+		y->parent = x->parent;
+		if (x->parent == NULL)
+			this->root = y;
+		else if (x == x->parent->right)
+			x->parent->right = y;
+		else
+			x->parent->left = y;
+
+		y->right = x;
+		x->parent = y;
+	}
+
 	// to replace node to be deleted with one of its children
 	void rbReplace(pointer x, pointer y){
 
@@ -404,90 +455,54 @@ public:
 		y->parent = x->parent;
 	}
 
-	bool deleteNodeHelper(pointer node, const value_type &key){
-		pointer x, y, z;
-		z = nil;
+	pointer getMin(pointer node){
+		if (node == nil || node == NULL)
+			return nil;
 
-		//find the node to be deleted
-		while (node != nil){
-			if (comp(node->val.first, key.first))
-				node = node->right;
-			else if (comp(key.first, node->val.first))
-				node = node->left;
-			else {
-				z = node;
-				break;
-			}
+		while (node->left != nil)
+			node = node->left;
+
+		return node;
+	}
+
+	pointer getMin() const{
+		if (root == NULL || root == nil)
+			return nil;
+
+		pointer temp = root;
+		while (temp->left != nil)
+			temp = temp->left;
+		return temp;
+	}
+
+	void recursiveCleer(pointer root){
+		if (root != nil){
+			recursiveCleer(root->left);
+			recursiveCleer(root->right);
+			alloc.destroy(root);
+			alloc.deallocate(root, 1);
 		}
+	}
 
-		//not a node with such key
-		if (z == nil)
-			return false;
+	pointer createNode(const value_type &val){
+		pointer newNode = alloc.allocate(1);
+		alloc.construct(newNode, Node(val, nil, nil, NULL, RED));
+		return newNode;
+	}
 
-		y = z;
-		int originalColor = y->color;
-
-		if (y->left == nil){
-			x = z->right;
-			rbReplace(z, z->right);
-		}else if (z->right == nil){
-			x = z->left;
-			rbReplace(z, z->left);
-		}else{
-			y = getMinimum(z->right);
-			originalColor = y->color;
-			x = y->right;
-
-			/*
-				 z = 200
-				 y = 300
-
-				 CASE 1
-							100
-							/ \
-						  50   200     	<- node to be deleted (200)
-								/\
-							 150   300
-				 CASE 2
-
-							100
-							 / \
-						   50   200     	<- node to be deleted (200)
-								/\
-							 150   300
-									/\
-								250	  350
-
-
-				 */
-
-			if (y->parent == z)  			// CASE 1
-				x->parent = y;
-			else{							// CASE 2
-				rbReplace(y, y->right);
-				y->right = z->right;
-				y->right->parent = y;
-			}
-
-			rbReplace(z, y);
-			y->left = z->left;
-			y->left->parent = y;
-			y->color = z->color;
-		}
-
-		alloc.destroy(z);
-		alloc.deallocate(z, 1);
-
-		if(originalColor == BLACK)
-			fixDeletion(x);
-
-		return true;
+	void deallocateNil(){
+		alloc.destroy(nil);
+		alloc.deallocate(nil, 1);
 	}
 
 
+	pointer getRoot() const{
+		return root;
+	}
 
-
-
+	pointer getNil() const{
+		return nil;
+	}
 };
 
 

@@ -32,6 +32,9 @@ void testElementAccess(){
 		std::cout << it->first << std::endl;
 	}
 
+	ft::map<int, int>::iterator it = a.begin();
+	std::cout << it->second << std::endl;
+
 	std::cout << a[349] << std::endl;
 	for (ft::map<int, int>::iterator it = a.begin(); it != a.end(); it++){
 		std::cout << it->first << std::endl;
@@ -136,7 +139,16 @@ void testDelete(){
 
 	for (ft::map<int, int>::iterator it = a.begin(); it != a.end(); it++)
 		std::cout << it->first << std::endl;
+
+	a.insert(ft::pair<int, int>(22,99));
+	a.insert(ft::pair<int, int>(3,2));
+	a.insert(ft::pair<int, int>(4,2));
+
+	for (ft::map<int, int>::iterator it = a.begin(); it != a.end(); it++)
+		std::cout << it->first << std::endl;
 }
+
+
 
 void testLookUp(){
 	std::cout  << "- - - - - - - - - - - - - - - - - - - count()"  << std::endl;
@@ -158,7 +170,71 @@ void testLookUp(){
 
 	std::cout  << "- - - - - - - - - - - - - - - - - - - lower upper equal bounds()"  << std::endl;
 
-	std::cout << a.lower_bound(18) << std::endl;
+	std::cout << a.lower_bound(10)->first << std::endl;
+	std::cout << a.lower_bound(5)->first << std::endl;
+	std::cout << a.lower_bound(20)->first << std::endl;
+	std::cout << a.lower_bound(1)->first << std::endl;
+	std::cout << a.lower_bound(18)->first << std::endl;
+	std::cout << a.lower_bound(12)->first << std::endl;
+	std::cout << a.lower_bound(22)->first << std::endl;
+	std::cout << a.lower_bound(3)->first << std::endl;
+	std::cout << a.lower_bound(4)->first << std::endl;
+
+	std::cout << a.upper_bound(10)->first << std::endl;
+	std::cout << a.upper_bound(5)->first << std::endl;
+	std::cout << a.upper_bound(20)->first << std::endl;
+	std::cout << a.upper_bound(1)->first << std::endl;
+	std::cout << a.upper_bound(18)->first << std::endl;
+	std::cout << a.upper_bound(12)->first << std::endl;
+//	std::cout << a.upper_bound(22)->first << std::endl;
+	std::cout << a.upper_bound(3)->first << std::endl;
+	std::cout << a.upper_bound(4)->first << std::endl;
+
+
+	std::cout << a.equal_range(10).first->first << std::endl;
+	std::cout << a.equal_range(10).first->second << std::endl;
+
+	std::cout << a.equal_range(5).first->first << std::endl;
+	std::cout << a.equal_range(5).first->second << std::endl;
+
+	std::cout << a.equal_range(20).first->first << std::endl;
+	std::cout << a.equal_range(20).first->second << std::endl;
+
+	std::cout << a.equal_range(1).first->first << std::endl;
+	std::cout << a.equal_range(1).first->second << std::endl;
+
+	std::cout << a.equal_range(18).first->first << std::endl;
+	std::cout << a.equal_range(18).first->second << std::endl;
+
+	std::cout << a.equal_range(12).first->first << std::endl;
+	std::cout << a.equal_range(12).first->second << std::endl;
+
+	std::cout << a.equal_range(22).first->first << std::endl;
+	std::cout << a.equal_range(22).first->second << std::endl;
+
+	std::cout << a.equal_range(3).first->first << std::endl;
+	std::cout << a.equal_range(3).first->second << std::endl;
+
+	std::cout << a.equal_range(4).first->first << std::endl;
+	std::cout << a.equal_range(4).first->second << std::endl;
+
+	ft::pair<ft::map<int,int>::const_iterator , ft::map<int,int>::const_iterator> pr =  a.equal_range(4);
+	std::cout << pr.first->first << std::endl;
+}
+
+void testIterators(){
+	ft::map<int, int> a;
+
+//	a.insert(ft::pair<int, int>(10,3));
+//	a.insert(ft::pair<int, int>(5,632));
+//	a.insert(ft::pair<int, int>(20,2));
+//
+//	ft::map<int,int>::const_iterator it = a.begin();
+//	std::cout << it->first << std::endl;
+
+	 ft::pair<ft::map<int, int>::const_iterator , ft::map<int, int>::const_iterator> pr = a.equal_range(18);
+	 std::cout << pr.first->first << std::endl;
+	 std::cout << pr.first->second << std::endl;
 
 
 }
@@ -168,5 +244,7 @@ int main(){
 //	testCapacity();
 //	testModifiers();
 //	testDelete();
-	testLookUp();
+//	testLookUp();
+	testIterators();
+
 }

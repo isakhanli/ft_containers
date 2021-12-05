@@ -9,6 +9,12 @@ namespace ft{
 	template<class T, class Node>
 	class rb_tree_iterator{
 
+
+		/* * * * * * * * * * * * * * *
+		*   	MEMBER TYPES
+		* * * * * * * * * * * * * * */
+
+
 	public:
 		typedef T       value_type;
 		typedef T&  	reference;
@@ -16,13 +22,20 @@ namespace ft{
 		typedef Node*	node_pointer;
 
 
-		typedef std::ptrdiff_t									difference_type;
+		typedef std::ptrdiff_t								difference_type;
 		typedef typename std::bidirectional_iterator_tag	iterator_category;
+
+
+	private:
+		node_pointer ptr;
+		node_pointer root;
+		node_pointer nil;
 
 
 		/* * * * * * * * * * * * * * *
 		*   	Canonical Form
 		* * * * * * * * * * * * * * */
+
 
 	public:
 		rb_tree_iterator() :
@@ -33,10 +46,8 @@ namespace ft{
 			ptr(ptr), root(root), nil(nil){
 		}
 
-		rb_tree_iterator(const rb_tree_iterator &copy) :
-			ptr(copy.ptr), root(copy.root), nil(copy.nil){
+		rb_tree_iterator(const rb_tree_iterator &copy) : ptr(copy.ptr), root(copy.root), nil(copy.nil){
 		}
-
 
 		rb_tree_iterator &operator=(const rb_tree_iterator &rbt){
 			if (this == &rbt)
@@ -49,6 +60,12 @@ namespace ft{
 
 		~rb_tree_iterator(){
 		};
+
+
+		// const conversion
+		operator	rb_tree_iterator<const T, Node> (void){
+			return rb_tree_iterator<const T, Node>(ptr, root, nil);
+		}
 
 		/* * * * * * * * * * * * * * *
 		*      Operator overloads
@@ -63,7 +80,6 @@ namespace ft{
 			return ptr != rbt.ptr;
 		}
 
-
 		reference operator*(){
 			return ptr->val;
 		}
@@ -71,6 +87,44 @@ namespace ft{
 		pointer operator->(){
 			return &ptr->val;
 		}
+
+		rb_tree_iterator &operator++(){
+			if (ptr == getMax(root)){
+				ptr = nil;
+				return *this;
+			}else if (ptr == nil){
+				ptr = NULL;
+				return *this;
+			}else
+				ptr = findNext(ptr);
+			return *this;
+		}
+
+		rb_tree_iterator operator++(int){
+			rb_tree_iterator 	tmp = *this;
+			operator++();
+			return tmp;
+		}
+
+		rb_tree_iterator &operator--(){
+			if (ptr == nil){
+				ptr = getMax(root);
+				return *this;
+			}
+			ptr = findPrevious(ptr);
+			return *this;
+		}
+
+		rb_tree_iterator operator--(int){
+			rb_tree_iterator 	tmp = *this;
+			operator--();
+			return tmp;
+		}
+
+
+		/* * * * * * * * * * * * * * *
+		*     HELPER FUNCTIONS
+		* * * * * * * * * * * * * * */
 
 		node_pointer getMax(node_pointer ndptr){
 			while (ndptr->right != nil)
@@ -108,66 +162,9 @@ namespace ft{
 			return tmp;
 		}
 
-
-
-
-		rb_tree_iterator &operator++(){
-			if (ptr == getMax(root)){
-				ptr = nil;
-				return *this;
-			}else if (ptr == nil){
-				ptr = NULL;
-				return *this;
-			}else
-				ptr = findNext(ptr);
-			return *this;
-		}
-
-		rb_tree_iterator operator++(int){
-			rb_tree_iterator 	tmp = *this;
-			operator++();
-			return tmp;
-		}
-
-		rb_tree_iterator &operator--(){
-			if (ptr == nil){
-				ptr = getMax(root);
-				return *this;
-			}
-			ptr = findPrevious(ptr);
-			return *this;
-		}
-
-		rb_tree_iterator operator--(int){
-			rb_tree_iterator 	tmp = *this;
-			operator--();
-			return tmp;
-		}
-
-
-		//for const_iterator
-		operator	rb_tree_iterator<const T, Node> (void){
-			return rb_tree_iterator<const T, Node>(ptr, root, nil);
-		}
-
-
 		node_pointer getPtr(){
 			return ptr;
 		}
-
-
-//		pointer findNext(){
-//
-//		}
-
-	private:
-		node_pointer ptr;
-		node_pointer root;
-		node_pointer nil;
-
-
-
-
 	};
 }
 
