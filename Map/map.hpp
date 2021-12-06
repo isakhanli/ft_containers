@@ -2,9 +2,6 @@
 #define MAP_HPP
 
 #include "../Utils/RedBlackTree.hpp"
-#include "../Utils/RBTree_iterator.hpp"
-#include "../Utils/reverse_iterator.hpp"
-
 
 namespace ft{
 	template< class Key, class T, class Compare = std::less<Key>, class Allocator = std::allocator<ft::pair<const Key, T> > >
@@ -27,25 +24,28 @@ namespace ft{
 		typedef value_type&													reference;
 		typedef typename Allocator::pointer									pointer;
 		typedef typename Allocator::const_pointer							const_pointer;
-		typedef ft::rb_tree_iterator<value_type, RBNode<value_type> >		iterator;
-		typedef ft::rb_tree_iterator<const value_type, RBNode<value_type> >	const_iterator;
-		typedef ft::reverse_iterator<iterator>								reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>						const_reverse_iterator;
+
+	private:
+		typedef RBTree<value_type, key_compare, allocator_type> rbTree;
+
+	public:
+		typedef typename rbTree::iterator 		 							iterator;
+		typedef typename rbTree::const_iterator 							const_iterator;
+		typedef typename rbTree::reverse_iterator 							reverse_iterator;
+		typedef typename rbTree::const_reverse_iterator 					const_reverse_iterator;
 
 		class value_compare{
-		protected:
+		public:
 			key_compare comp;
 
-		public:
-			value_compare(key_compare c) : comp(c) {}
+//		public:
+//			value_compare(key_compare c) : comp(c) {}
 
 			bool operator()(const value_type& lhs, const value_type& rhs) const{
 				return comp(lhs.first, rhs.first);
 			}
 		};
 
-	private:
-		typedef RBTree<value_type, key_compare, allocator_type> rbTree;
 
 	private:
 		rbTree 				_rbTree;
@@ -59,12 +59,19 @@ namespace ft{
 			 * * * * * * * * * * * * * * * * */
 
 	public:
-		explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type()) : _value_compare(comp){
+		explicit map(const key_compare &comp = key_compare(), const allocator_type &alloc = allocator_type())
+		: _rbTree(), _alloc(alloc), _compare(comp), _value_compare(value_compare()){
 
 		}
 
 		template< class InputIt >
-		map(InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator()) : _value_compare(comp){
+		map(InputIt first, InputIt last,
+			const Compare& comp = Compare(),
+			const Allocator& alloc = Allocator()) : _value_compare(value_compare()){
+			while (first != last){
+				_rbTree.insert(*first);
+				first++;
+			}
 
 		}
 
@@ -73,8 +80,8 @@ namespace ft{
 			_rbTree.deallocateNil();
 		}
 
-		map(const map& other)
-		: _rbTree(other._rbTree), _compare(other._compare), _alloc(other._alloc), _value_compare(other._value_compare){
+		map(const map& other){
+			*this = other;
 		}
 
 		map& operator=(const map& other){
@@ -110,38 +117,14 @@ namespace ft{
 			* * * * * * * * * * * * * * * * */
 
 
-		iterator		begin(){
-			return       iterator(_rbTree.getMin(), _rbTree.getRoot(), _rbTree.getNil());
-		}
-
-		const_iterator		begin() const{
-			return       const_iterator(_rbTree.getMin(), _rbTree.getRoot(), _rbTree.getNil());
-		}
-
-		iterator		end(){
-			return       iterator(_rbTree.getNil(), _rbTree.getRoot(), _rbTree.getNil());
-		}
-
-		const_iterator		end() const{
-			return       const_iterator(_rbTree.getNil(), _rbTree.getRoot(), _rbTree.getNil());
-		}
-
-		reverse_iterator		rbegin(){
-			return       	reverse_iterator(end());
-		}
-
-		const_reverse_iterator		rbegin() const{
-			return       	const_reverse_iterator(end());
-		}
-
-		reverse_iterator		rend(){
-			return       	reverse_iterator(begin());
-		}
-
-		const_reverse_iterator		rend() const{
-			return       	const_reverse_iterator(begin());
-		}
-
+		iterator					begin() {return	_rbTree.begin(); }
+		const_iterator 				begin() const {return	_rbTree.begin(); }
+		iterator					end() {return	_rbTree.end(); }
+		const_iterator				end() const {return	_rbTree.end(); }
+		reverse_iterator 			rbegin() {return	_rbTree.rbegin(); }
+		const_reverse_iterator 		rbegin() const {return	_rbTree.rbegin(); }
+		reverse_iterator			rend() {return	_rbTree.rend(); }
+		const_reverse_iterator		rend() const {return	_rbTree.rend(); }
 
 			/* * * * * * * * * * * * * * * * *
 			* 			CAPACITY
@@ -268,14 +251,13 @@ namespace ft{
 			return end();
 		}
 
-//		ft::pair<iterator, iterator> equal_range(const Key& key){
-//			return ft::make_pair(lower_bound(key), upper_bound(key));
-//		}
+		ft::pair<iterator, iterator> equal_range(const Key& key){
+			return ft::make_pair(lower_bound(key), upper_bound(key));
+		}
 
 		ft::pair<const_iterator, const_iterator> equal_range(const Key& key) const{
 			return ft::make_pair(lower_bound(key), upper_bound(key));
 		}
-
 
 			/* * * * * * * * * * * * * * * * *
 			* 		  	  Observers

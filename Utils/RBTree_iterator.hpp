@@ -6,27 +6,27 @@
 
 namespace ft{
 
-	template<class T, class Node>
+	template<class Pair, class NodePointer>
 	class rb_tree_iterator{
 
 
 		/* * * * * * * * * * * * * * *
-		*   	MEMBER TYPES
+		*   	Member Types
 		* * * * * * * * * * * * * * */
 
 
 	public:
-		typedef T       value_type;
-		typedef T&  	reference;
-		typedef T* 		pointer;
-		typedef Node*	node_pointer;
+		typedef Pair       	value_type;
+		typedef Pair&  		reference;
+		typedef Pair* 		pointer;
+		typedef NodePointer	node_pointer;
 
 
 		typedef std::ptrdiff_t								difference_type;
 		typedef typename std::bidirectional_iterator_tag	iterator_category;
 
 
-	private:
+	public:
 		node_pointer ptr;
 		node_pointer root;
 		node_pointer nil;
@@ -42,11 +42,18 @@ namespace ft{
 			ptr(NULL), root(NULL), nil(NULL){
 		}
 
-		rb_tree_iterator(node_pointer ptr, node_pointer root, node_pointer nil) :
+		rb_tree_iterator(node_pointer ptr, node_pointer root, node_pointer  nil) :
 			ptr(ptr), root(root), nil(nil){
 		}
 
-		rb_tree_iterator(const rb_tree_iterator &copy) : ptr(copy.ptr), root(copy.root), nil(copy.nil){
+		template <typename U, typename P1> rb_tree_iterator(const rb_tree_iterator<U,P1>& u) {
+			ptr = u.ptr;
+			root = u.root;
+			nil = u.nil;
+		}
+
+		rb_tree_iterator(const rb_tree_iterator &copy){
+			*this = copy;
 		}
 
 		rb_tree_iterator &operator=(const rb_tree_iterator &rbt){
@@ -62,10 +69,10 @@ namespace ft{
 		};
 
 
-		// const conversion
-		operator	rb_tree_iterator<const T, Node> (void){
-			return rb_tree_iterator<const T, Node>(ptr, root, nil);
-		}
+//		// const conversion
+//		operator	rb_tree_iterator<const T, Node> (void){
+//			return rb_tree_iterator<const T, Node>(ptr, root, nil);
+//		}
 
 		/* * * * * * * * * * * * * * *
 		*      Operator overloads
@@ -80,11 +87,11 @@ namespace ft{
 			return ptr != rbt.ptr;
 		}
 
-		reference operator*(){
+		reference operator*() const{
 			return ptr->val;
 		}
 
-		pointer operator->(){
+		pointer operator->() const{
 			return &ptr->val;
 		}
 
@@ -126,8 +133,9 @@ namespace ft{
 		*     HELPER FUNCTIONS
 		* * * * * * * * * * * * * * */
 
+		//while (ndptr)
 		node_pointer getMax(node_pointer ndptr){
-			while (ndptr->right != nil)
+			while (ndptr && ndptr->right != nil)
 				ndptr = ndptr->right;
 			return ndptr;
 		}

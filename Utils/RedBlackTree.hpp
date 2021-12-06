@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include "../Utils/utility.hpp"
+#include "../Utils/RBTree_iterator.hpp"
+#include "../Utils/reverse_iterator.hpp"
+
 
 enum Color{
 	BLACK,
@@ -64,6 +67,12 @@ public:
 	typedef Compare															key_compare;
 	typedef typename Allocator::template rebind<RBNode<T> >::other			allocator_type;
 	typedef typename allocator_type::pointer								pointer;
+	typedef typename allocator_type::const_pointer							const_pointer;
+
+	typedef ft::rb_tree_iterator<value_type, pointer>						iterator;
+	typedef ft::rb_tree_iterator<const value_type, const_pointer>			const_iterator;
+	typedef ft::reverse_iterator<iterator>									reverse_iterator;
+	typedef ft::reverse_iterator<const_iterator>							const_reverse_iterator;
 
 	pointer 			root;
 	pointer 			nil;
@@ -76,11 +85,16 @@ public:
 		* 		   CANONICAL FORM
 		* * * * * * * * * * * * * * * * * * */
 
+
 	RBTree(key_compare const& cmp = key_compare()) : comp(cmp){
 		_size = 0;
 		nil = alloc.allocate(1);
 		alloc.construct(nil, Node());
 		root = nil;
+//		nil->parent = nil;
+//		nil->left = root;
+//		nil->right = root;
+//		root->parent = nil;
 	}
 
 	~RBTree(){
@@ -91,13 +105,66 @@ public:
 	}
 
 	RBTree& operator=(const RBTree& other){
-//		this->root = other.root;
-		this->nil = other.nil;
-		this->_size = other._size;
+		if (this == &other)
+			return *this;
+
+		clear();
+		deallocateNil();
 		this->alloc = other.alloc;
 		this->comp = other.comp;
+		nil = alloc.allocate(1);
+		alloc.construct(nil, Node());
+		root = nil;
+		deepCopy(other.root, other.nil);
 		return *this;
 	}
+
+	void deepCopy(pointer rootPtr, pointer nilPtr){
+		if (rootPtr != nilPtr){
+			insert(rootPtr->val);
+			deepCopy(rootPtr->right, nilPtr);
+			deepCopy(rootPtr->left, nilPtr);
+		}
+	}
+
+
+		/* * * * * * * * * * * * * * * * * * *
+		* 		    Iterators
+		* * * * * * * * * * * * * * * * * * */
+
+
+		iterator		begin(){
+			return       iterator(getMin(), root, nil);
+		}
+
+		const_iterator		begin() const{
+			return       const_iterator(getMin(), root, nil);
+		}
+
+		iterator		end(){
+			return       iterator(nil, root, nil);
+		}
+
+		const_iterator		end() const{
+			return       const_iterator(nil, root, nil);
+		}
+
+		reverse_iterator		rbegin(){
+			return       	reverse_iterator(end());
+		}
+
+		const_reverse_iterator		rbegin() const{
+			return       	const_reverse_iterator(end());
+		}
+
+		reverse_iterator		rend(){
+			return       	reverse_iterator(begin());
+		}
+
+		const_reverse_iterator		rend() const{
+			return       	const_reverse_iterator(begin());
+		}
+
 
 
 		/* * * * * * * * * * * * * * * * * * *
@@ -118,7 +185,7 @@ public:
 		return nil;
 	}
 
-	bool size() const{
+	size_type size() const{
 		return _size;
 	}
 
@@ -141,6 +208,8 @@ public:
 
 		bool insert( const value_type& value ) {
 			pointer newNode = createNode(value);
+//			pointer newNode = alloc.allocate(1);
+//			alloc.construct(newNode, Node(value, nil, nil, NULL, RED));
 
 			pointer y = NULL;
 			pointer x = this->root;
@@ -305,6 +374,7 @@ public:
 			if(originalColor == BLACK)
 				fixDeletion(x);
 
+			_size--;
 			return true;
 		}
 
