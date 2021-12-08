@@ -141,7 +141,7 @@ namespace ft{
 		}
 
 		node_pointer getMin(node_pointer ndptr){
-			while (ndptr->left != nil)
+			while (ndptr &&ndptr->left != nil)
 				ndptr = ndptr->left;
 			return ndptr;
 		}

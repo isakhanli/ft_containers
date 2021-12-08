@@ -4,6 +4,10 @@
 #include <iostream>
 #include <string>
 
+using namespace std::chrono;
+
+#include <chrono>
+
 #include <vector>
 
 #define _map std::map
@@ -15,6 +19,12 @@
 //		return x > y;
 //	}
 //};
+
+struct myComp{
+	bool operator()( int a, int b) const {
+		return a > b;
+	}
+};
 
 void testElementAccess(){
 	std::cout  << "- - - - - - - - - - - - - - - - - - - Element access"  << std::endl;
@@ -342,23 +352,211 @@ void test2() {
 }
 
 
-void testErase(){
+template <class T, class V>
+std::vector<int> testErase(std::map<T, V> mp) {
+	std::vector<int> v;
+	for (int i = 0, j = 0; i < 300000 ; ++i, ++j)
+		mp.insert(std::make_pair(i, j));
+	typename std::map<T, V>::iterator it = mp.begin();
+	v.push_back(it->first);
+	mp.erase(it);
+	v.push_back(mp.size());
+	it = mp.begin();
+	mp.erase(++it);
+	v.push_back(mp.size());
+	it = mp.begin();
+	v.push_back(it->first);
+	typename std::map<T, V>::iterator it4 = mp.begin();
+//	g_start1 = timer();
+	for (; it4 != mp.end(); it4 = mp.begin())
+		mp.erase(it4);
+//	g_end1 = timer();
+	v.push_back(mp.size());
 	std::map<int, int> mp2;
 	for (int i = 0, j = 0; i < 10 ; ++i, ++j)
 		mp2.insert(std::make_pair(i, j));
-
-	std::map<int, int>::iterator ittest = mp2.begin();
-
-
-	for (int i = 0; i < 2; ++i)
-		ittest++;
-
+	typename std::map<T, V>::iterator ittest = mp2.begin();
+	for (int i = 0; i < 2; ++i) ittest++;
 	mp2.erase(ittest);
-
-	for (int i = 0; i < 5; ++i)
-		ittest++;
-
+	for (int i = 0; i < 5; ++i) ittest++;
 	mp2.erase(ittest);
+	typename std::map<T, V>::iterator it3 = mp2.begin();
+	for (; it3 != mp2.end(); ++it3) {
+		v.push_back(it3->first);
+		v.push_back(it3->second);
+	}
+	return v;
+}
+
+template <class T, class V>
+std::vector<int> testErase2(std::map<T, V> mp) {
+	std::vector<int> v;
+	for (int i = 0, j = 0; i < 300000 ; ++i, ++j)
+		mp.insert(std::make_pair(i, j));
+	typename std::map<T, V>::iterator it = mp.begin();
+	v.push_back(it->first);
+	mp.erase(it);
+	v.push_back(mp.size());
+	it = mp.begin();
+	mp.erase(++it);
+	v.push_back(mp.size());
+	it = mp.begin();
+	v.push_back(it->first);
+	typename std::map<T, V>::iterator it4 = mp.begin();
+//	g_start1 = timer();
+	for (; it4 != mp.end(); it4 = mp.begin())
+		mp.erase(it4);
+//	g_end1 = timer();
+	v.push_back(mp.size());
+	std::map<int, int> mp2;
+	for (int i = 0, j = 0; i < 10 ; ++i, ++j)
+		mp2.insert(std::make_pair(i, j));
+	typename std::map<T, V>::iterator ittest = mp2.begin();
+	for (int i = 0; i < 2; ++i) ittest++;
+	mp2.erase(ittest);
+	for (int i = 0; i < 5; ++i) ittest++;
+	mp2.erase(ittest);
+	typename std::map<T, V>::iterator it3 = mp2.begin();
+	for (; it3 != mp2.end(); ++it3) {
+		v.push_back(it3->first);
+		v.push_back(it3->second);
+	}
+	return v;
+}
+
+
+void 	testComparator(){
+	std::map<int, int, myComp> a;
+	a.insert(std::pair<int, int>(10,3));
+	a.insert(std::pair<int, int>(5,632));
+	a.insert(std::pair<int, int>(20,2));
+	a.insert(std::pair<int, int>(1,2));
+	a.insert(std::pair<int, int>(18,192));
+	a.insert(std::pair<int, int>(12,12900));
+	a.insert(std::pair<int, int>(22,99));
+	a.insert(std::pair<int, int>(3,2));
+	a.insert(std::pair<int, int>(4,2));
+
+	for (std::map<int, int, myComp>::iterator it = a.begin(); it != a.end(); it++)
+		std::cout << it->first << std::endl;
+}
+
+template <class T, class V>
+std::vector<int> lower_bound_test(std::map<T, V> mp) {
+	auto f = []() -> int { return rand() % 10000; };
+
+	std::vector<int> v;
+	std::map<int, int, std::greater<int> > mp2;
+	mp.insert(std::make_pair(10, 10));
+	mp2.insert(std::make_pair(10, 10));
+	if (mp.lower_bound(11) == mp.end())
+		v.push_back(1);
+	if (mp2.lower_bound(1) == mp2.end())
+		v.push_back(1);
+	mp.insert(std::make_pair(20, 20));
+	mp.insert(std::make_pair(30, 30));
+	mp.insert(std::make_pair(40, 40));
+	mp.insert(std::make_pair(50, 50));
+	mp.insert(std::make_pair(60, 60));
+	mp2.insert(std::make_pair(20, 20));
+	mp2.insert(std::make_pair(30, 30));
+	mp2.insert(std::make_pair(40, 40));
+	mp2.insert(std::make_pair(50, 50));
+	mp2.insert(std::make_pair(60, 60));
+	std::map<int, int>::iterator it;
+	for (int i = 1; i < 60; i += 10) {
+		it = mp.lower_bound(i);
+		v.push_back(it->first);
+	}
+	for (int i = 11; i < 70; i += 10) {
+		it = mp2.lower_bound(i);
+		v.push_back(it->first);
+	}
+	std::map<int, int> mp3;
+	for (int i = 0, j = 0; i < 500000; ++i, ++j) {
+		mp3.insert(std::make_pair(i, j));
+	}
+//	g_start1 = timer();
+	auto start = high_resolution_clock::now();
+	mp3.lower_bound(490000);
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	std::cout << "Time taken by function: "
+			  << duration.count() << " microseconds" << std::endl;
+//	g_end1 = timer();
+	return v;
+}
+
+template <class T, class V>
+std::vector<int> lower_bound_test2(std::map<T, V> mp) {
+
+	auto f = []() -> int { return rand() % 10000; };
+
+
+	std::vector<int> v;
+	std::map<int, int, std::greater<int> > mp2;
+	mp.insert(std::make_pair(10, 10));
+	mp2.insert(std::make_pair(10, 10));
+	if (mp.lower_bound(11) == mp.end())
+		v.push_back(1);
+	if (mp2.lower_bound(1) == mp2.end())
+		v.push_back(1);
+	mp.insert(std::make_pair(20, 20));
+	mp.insert(std::make_pair(30, 30));
+	mp.insert(std::make_pair(40, 40));
+	mp.insert(std::make_pair(50, 50));
+	mp.insert(std::make_pair(60, 60));
+	mp2.insert(std::make_pair(20, 20));
+	mp2.insert(std::make_pair(30, 30));
+	mp2.insert(std::make_pair(40, 40));
+	mp2.insert(std::make_pair(50, 50));
+	mp2.insert(std::make_pair(60, 60));
+	std::map<int, int>::iterator it;
+	for (int i = 1; i < 60; i += 10) {
+		it = mp.lower_bound(i);
+		v.push_back(it->first);
+	}
+	for (int i = 11; i < 70; i += 10) {
+		it = mp2.lower_bound(i);
+		v.push_back(it->first);
+	}
+	std::map<int, int> mp3;
+	for (int i = 0, j = 0; i < 500000; ++i, ++j) {
+		mp3.insert(std::make_pair(i, j));
+	}
+//	g_start1 = timer();
+	auto start = high_resolution_clock::now();
+	mp3.lower_bound(490000);
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<microseconds>(stop - start);
+
+	std::cout << "Time taken by function: "
+		 << duration.count() << " microseconds" << std::endl;
+//	g_end1 = timer();
+	return v;
+}
+
+
+void testbounds(){
+	std::map<int, int> sMap;
+	std::vector<int> a = lower_bound_test<int,int>(sMap);
+
+	std::map<int, int> fMap;
+	std::vector<int> b = lower_bound_test2<int,int>(fMap);
+}
+
+void testbounds2(){
+	std::map<int, int> a;
+
+	for (int i = 0; i < 50000; i++){
+		a.insert(std::pair<int, int>(i, i));
+	}
+
+
+
+	std::cout << a.lower_bound(49000)->first << std::endl;
+
 }
 
 
@@ -371,5 +569,12 @@ int main(){
 //	testLookUp();
 //	testIterators();
 //	test2();
-	testErase();
+//	std::map<int, int> ft_map;
+//	std::map<int, int> std_map;
+////	testErase<int, int>(std_map);
+//	testErase2<int, int>(ft_map);
+
+//	testComparator();
+//	testbounds();
+	testbounds2();
 }

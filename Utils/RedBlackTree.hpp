@@ -58,14 +58,15 @@ public:
 };
 
 
-template <class T, class Compare = std::less<T>, class Allocator = std::allocator<T> >
+template <class ValueType, class Key, class Compare, class Allocator>
 class RBTree{
 public:
-	typedef T																value_type;
-	typedef RBNode<T>														Node;
+	typedef ValueType														value_type;
+	typedef Key																key_type;
+	typedef RBNode<value_type>												Node;
 	typedef std::size_t														size_type;
 	typedef Compare															key_compare;
-	typedef typename Allocator::template rebind<RBNode<T> >::other			allocator_type;
+	typedef typename Allocator::template rebind<RBNode<value_type> >::other	allocator_type;
 	typedef typename allocator_type::pointer								pointer;
 	typedef typename allocator_type::const_pointer							const_pointer;
 
@@ -200,6 +201,92 @@ public:
 		root = nil;
 	}
 
+
+		/* * * * * * * * * * * * * * * * * * *
+		* 		   Lower/Upper Bounds
+		* * * * * * * * * * * * * * * * * * */
+
+
+		iterator lower_bound(const key_type& key){
+
+			pointer temp = root;
+			iterator result;
+
+			iterator endit = end();
+			endit--;
+
+			while (temp != nil){
+				if (!comp(temp->val.first, key)){
+					result = iterator(temp, root, nil);
+					temp = temp->left;
+				}else
+					temp = temp->right;
+			}
+			if (!comp(key, endit->first))
+				return iterator(nil, root, nil);
+
+			return result;
+		}
+
+		const_iterator lower_bound(const key_type& key) const{
+			pointer temp = root;
+			const_iterator result;
+
+			const_iterator endit = end();
+			endit--;
+
+			while (temp != nil){
+				if (!comp(temp->val.first, key)){
+					result = const_iterator(temp, root, nil);
+					temp = temp->left;
+				}else
+					temp = temp->right;
+			}
+			if (!comp(key, endit->first))
+				return const_iterator(nil, root, nil);
+
+			return result;
+		}
+
+		iterator upper_bound(const key_type& key){
+			pointer temp = root;
+			iterator result;
+
+			iterator endit = end();
+			endit--;
+
+			while (temp != nil){
+				if (comp(key, temp->val.first)){
+					result = iterator(temp, root, nil);
+					temp = temp->left;
+				}else
+					temp = temp->right;
+			}
+			if (!comp(key, endit->first))
+				return iterator(nil, root, nil);
+
+			return result;
+		}
+
+		const_iterator upper_bound(const key_type& key) const{
+			pointer temp = root;
+			const_iterator result;
+
+			const_iterator endit = end();
+			endit--;
+
+			while (temp != nil){
+				if (comp(key, temp->val.first)){
+					result = const_iterator(temp, root, nil);
+					temp = temp->left;
+				}else
+					temp = temp->right;
+			}
+			if (!comp(key, endit->first))
+				return const_iterator(nil, root, nil);
+
+			return result;
+		}
 
 		/* * * * * * * * * * * * * * * * * * *
 		* 		          INSERT

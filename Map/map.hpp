@@ -26,7 +26,7 @@ namespace ft{
 		typedef typename Allocator::const_pointer							const_pointer;
 
 	private:
-		typedef RBTree<value_type, key_compare, allocator_type> rbTree;
+		typedef RBTree<value_type, key_type, key_compare, allocator_type> rbTree;
 
 	public:
 		typedef typename rbTree::iterator 		 							iterator;
@@ -34,15 +34,13 @@ namespace ft{
 		typedef typename rbTree::reverse_iterator 							reverse_iterator;
 		typedef typename rbTree::const_reverse_iterator 					const_reverse_iterator;
 
-		class value_compare{
+		class value_compare /*: std::binary_function<value_type, value_type, bool>*/{
 		public:
 			key_compare comp;
-
-//		public:
 //			value_compare(key_compare c) : comp(c) {}
 
 			bool operator()(const value_type& lhs, const value_type& rhs) const{
-				return comp(lhs.first, rhs.first);
+				return comp()(lhs.first, rhs.first);
 			}
 		};
 
@@ -212,43 +210,19 @@ namespace ft{
 		}
 
 		iterator lower_bound(const Key& key){
-			iterator temp = begin();
-			while (temp != end()){
-				if (!_compare(temp.getPtr()->val.first, key))
-					return temp;
-				temp++;
-			}
-			return end();
+			return _rbTree.lower_bound(key);
 		}
 
 		const_iterator lower_bound(const Key& key) const{
-			const_iterator temp = begin();
-			while (temp != end()){
-				if (!_compare(temp.getPtr()->val.first, key))
-					return temp;
-				temp++;
-			}
-			return end();
+			return _rbTree.lower_bound(key);
 		}
 
 		iterator upper_bound(const Key& key){
-			iterator temp = begin();
-			while (temp != end()){
-				if (_compare(key, temp.getPtr()->val.first))
-					return temp;
-				temp++;
-			}
-			return end();
+			return _rbTree.upper_bound(key);
 		}
 
 		const_iterator upper_bound(const Key& key) const{
-			const_iterator temp = begin();
-			while (temp != end()){
-				if (_compare(key, temp.getPtr()->val.first))
-					return temp;
-				temp++;
-			}
-			return end();
+			return _rbTree.upper_bound(key);
 		}
 
 		ft::pair<iterator, iterator> equal_range(const Key& key){
