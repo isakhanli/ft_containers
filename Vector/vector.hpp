@@ -77,20 +77,38 @@ namespace ft{
 		}
 
 		//COPY
-		vector (const vector &copy){
-			this->_size = copy._size;
-			this->_capacity = copy._capacity;
-			this->alloc = copy.alloc;
+		vector (const vector &copy)
+			: _capacity(copy._capacity), _size(copy._size), alloc(copy.alloc){
 			this->_data = alloc.allocate(_capacity);
 
 			for (size_type i = 0; i < _size; i++)
 				alloc.construct(_data + i, copy._data[i]);
 		}
 
+		vector& operator=(const vector& other){
+			if (this == &other)
+				return *this;
+
+			clear();
+			alloc.deallocate(_data, _capacity);
+
+			this->_capacity = other._capacity;
+			this->alloc = other.alloc;
+			this->_size = other._size;
+			this->_data = alloc.allocate(_capacity);
+
+			for (size_type i = 0; i < _size; i++)
+				alloc.construct(_data + i, other._data[i]);
+
+			return *this;
+		}
+
 		//DESTRUCTOR
 		~vector(){
-			if (_data)
+//			if (_data) {
+				clear();
 				alloc.deallocate(_data, _capacity);
+//			}
 		}
 
 
@@ -252,8 +270,9 @@ namespace ft{
 
 
 		void clear(){
-			for (size_type i = 0; i < _size; i++)
+			for (size_type i = _size; i > 0; i--)
 				alloc.destroy(_data + i);
+
 			_size = 0;
 		}
 
@@ -274,8 +293,8 @@ namespace ft{
 				for (size_type i = 0; i < _size; i++)
 					alloc.destroy(&_data[i]);
 
-				if (_data)
-					alloc.deallocate(_data, _capacity);
+
+				alloc.deallocate(_data, _capacity);
 
 				_data = newAlloc;
 				_capacity = new_cap;
@@ -333,51 +352,59 @@ namespace ft{
 			size_type index = pos - begin();
 			size_type count = last - first;
 
-			if (_size + count > _capacity){
-				size_type new_cap = (_capacity * 2 >= _size + count ) ? _capacity * 2 : _size + count;
-				value_type *newAlloc = alloc.allocate(new_cap);
+			value_type *newAlloc;
+			size_type new_cap = (_capacity * 2 >= _size + count) ? _capacity * 2 : _size + count;
 
-				for (size_type i = 0; i < (_size - index); i++)
-					alloc.construct(newAlloc + i, _data[i]);
+			try{
+				if (_size + count > _capacity) {
+					newAlloc = alloc.allocate(new_cap);
 
-				for (size_type i = 0; i < count; i++) {
-					alloc.construct(newAlloc + index + i, *(first));
-					first++;
+					for (size_type i = 0; i < (_size - index); i++)
+						alloc.construct(newAlloc + i, _data[i]);
+
+					for (size_type i = 0; i < count; i++) {
+						alloc.construct(newAlloc + index + i, *(first));
+						first++;
+					}
+					for (size_type i = index; i < _size; i++)
+						alloc.construct(newAlloc + i + count, _data[i]);
+
+					for (size_type i = 0; i < _size; i++)
+						alloc.destroy(_data + i);
+					if (_data)
+						alloc.deallocate(_data, _capacity);
+
+					_data = newAlloc;
+					_capacity = new_cap;
+				} else {
+					for (size_type i = _size; i > index; i--) {
+						alloc.destroy(_data + i + count - 1);
+						alloc.construct(_data + i + count - 1, _data[i - 1]);
+					}
+					for (size_type i = index; i < index + count; i++) {
+						alloc.destroy(_data + i);
+						alloc.construct(_data + i, *first);
+						first++;
+					}
 				}
-				for (size_type i = index; i < _size; i++)
-					alloc.construct(newAlloc + i + count, _data[i]);
-
-				for (size_type i = 0; i < _size; i++)
-					alloc.destroy(_data + i);
-				if (_data)
-					alloc.deallocate(_data, _capacity);
-
-				_data = newAlloc;
-				_capacity = new_cap;
-			}else{
-				for (size_type i = _size; i > index; i--){
-					alloc.destroy(_data + i + count - 1);
-					alloc.construct(_data + i + count - 1, _data[i -1]);
-				}
-				for (size_type i = index; i < index + count; i++){
-					alloc.destroy(_data + i);
-					alloc.construct(_data + i, *first);
-					first++;
-				}
+				_size += count;
+			}catch(...) {
+				for(int i = 0; i < count; i++)
+					alloc.destroy(newAlloc + i +index);
+				alloc.deallocate(newAlloc, new_cap);
+				throw;
 			}
-			_size += count;
 
 		}
 
 		iterator erase (iterator pos){
 			size_type index = pos - begin();
-
 			alloc.destroy(_data + index);
 
-			std::copy(pos+1, this->end(), pos);
+			for (size_type i = index; i < _size - 1; i++)
+				alloc.construct(_data + i, _data[i + 1]);
 
 			_size--;
-
 			return iterator(_data + index);
 
 		}
@@ -442,6 +469,26 @@ namespace ft{
 			std::swap(this->_size, x._size);
 			std::swap(this->_capacity, x._capacity);
 			std::swap(this->alloc, x.alloc);
+
+//			if (this == &x)
+//				return;
+
+//			value_type *temp_data = x._data;
+//			size_type temp_size = x._size;
+//			size_type temp_capacity = x._capacity;
+//			allocator_type temp_alloc = x.alloc;
+//
+//			x._data = this->_data;
+//			x._size = this->_size;
+//			x._capacity = this->_capacity;
+//			x.alloc = this->alloc;
+//
+//			this->_data = temp_data;
+//			this->_size = temp_size;
+//			this->_capacity = temp_capacity;
+//			this->alloc = temp_alloc;
+
+
 		}
 
 	};

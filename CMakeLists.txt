@@ -6,5 +6,5 @@ set(CMAKE_CXX_STANDARD 11)
 include_directories(Vector)
 
 add_executable(containers
-        ./Map/main.cpp
+        ./Vector/main.cpp
         )

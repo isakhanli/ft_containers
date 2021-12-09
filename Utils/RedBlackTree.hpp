@@ -5,6 +5,11 @@
 #include "../Utils/utility.hpp"
 #include "../Utils/RBTree_iterator.hpp"
 #include "../Utils/reverse_iterator.hpp"
+#include  <algorithm>
+#include <iomanip>
+#include <memory>
+#include <iostream>
+
 
 
 enum Color{
@@ -172,34 +177,42 @@ public:
 		* 		   OTHER FUNCTIONS
 		* * * * * * * * * * * * * * * * * * */
 
-	pointer find(const value_type &key) const{
+		pointer find(const value_type &key) const{
 
 		pointer tmp = root;
-		while (tmp != nil){
-			if (comp(key.first, tmp->val.first))
-				tmp = tmp->left;
-			else if(comp(tmp->val.first, key.first))
-				tmp = tmp->right;
-			else
-				return tmp;
+			while (tmp != nil){
+				if (comp(key, tmp->val))
+					tmp = tmp->left;
+				else if(comp(tmp->val, key))
+					tmp = tmp->right;
+				else
+					return tmp;
+			}
+			return nil;
 		}
-		return nil;
-	}
 
-	size_type size() const{
-		return _size;
-	}
+		size_type size() const{
+			return _size;
+		}
 
-	size_type max_size() const{
-		return alloc.max_size();
-	}
+		size_type max_size() const{
+			return alloc.max_size();
+		}
 
-	void clear(){
-		if (root != nil)
-			recursiveCleer(root);
-		_size = 0;
-		root = nil;
-	}
+		void clear(){
+			if (root != nil)
+				recursiveCleer(root);
+			_size = 0;
+			root = nil;
+		}
+
+		void swap(RBTree &other){
+			std::swap(root, other.root);
+			std::swap(nil, other.nil);
+			std::swap(_size, other._size);
+			std::swap(alloc, other.alloc);
+			std::swap(comp, other.comp);
+		}
 
 
 		/* * * * * * * * * * * * * * * * * * *
@@ -207,7 +220,7 @@ public:
 		* * * * * * * * * * * * * * * * * * */
 
 
-		iterator lower_bound(const key_type& key){
+		iterator lower_bound(const value_type& key){
 
 			pointer temp = root;
 			iterator result;
@@ -216,19 +229,19 @@ public:
 			endit--;
 
 			while (temp != nil){
-				if (!comp(temp->val.first, key)){
+				if (!comp(temp->val, key)){
 					result = iterator(temp, root, nil);
 					temp = temp->left;
 				}else
 					temp = temp->right;
 			}
-			if (!comp(key, endit->first))
+			if (!comp(key, *endit))
 				return iterator(nil, root, nil);
 
 			return result;
 		}
 
-		const_iterator lower_bound(const key_type& key) const{
+		const_iterator lower_bound(const value_type& key) const{
 			pointer temp = root;
 			const_iterator result;
 
@@ -236,19 +249,19 @@ public:
 			endit--;
 
 			while (temp != nil){
-				if (!comp(temp->val.first, key)){
+				if (!comp(temp->val, key)){
 					result = const_iterator(temp, root, nil);
 					temp = temp->left;
 				}else
 					temp = temp->right;
 			}
-			if (!comp(key, endit->first))
+			if (!comp(key, *endit))
 				return const_iterator(nil, root, nil);
 
 			return result;
 		}
 
-		iterator upper_bound(const key_type& key){
+		iterator upper_bound(const value_type& key){
 			pointer temp = root;
 			iterator result;
 
@@ -256,19 +269,19 @@ public:
 			endit--;
 
 			while (temp != nil){
-				if (comp(key, temp->val.first)){
+				if (comp(key, temp->val)){
 					result = iterator(temp, root, nil);
 					temp = temp->left;
 				}else
 					temp = temp->right;
 			}
-			if (!comp(key, endit->first))
+			if (!comp(key, *endit))
 				return iterator(nil, root, nil);
 
 			return result;
 		}
 
-		const_iterator upper_bound(const key_type& key) const{
+		const_iterator upper_bound(const value_type& key) const{
 			pointer temp = root;
 			const_iterator result;
 
@@ -276,13 +289,13 @@ public:
 			endit--;
 
 			while (temp != nil){
-				if (comp(key, temp->val.first)){
+				if (comp(key, temp->val)){
 					result = const_iterator(temp, root, nil);
 					temp = temp->left;
 				}else
 					temp = temp->right;
 			}
-			if (!comp(key, endit->first))
+			if (!comp(key, *endit))
 				return const_iterator(nil, root, nil);
 
 			return result;
@@ -295,16 +308,14 @@ public:
 
 		bool insert( const value_type& value ) {
 			pointer newNode = createNode(value);
-//			pointer newNode = alloc.allocate(1);
-//			alloc.construct(newNode, Node(value, nil, nil, NULL, RED));
 
 			pointer y = NULL;
 			pointer x = this->root;
 			while (x != nil) {
 				y = x;
-				if (comp(newNode->val.first, x->val.first))
+				if (comp(newNode->val, x->val))
 					x = x->left;
-				else if (comp(x->val.first, newNode->val.first))
+				else if (comp(x->val, newNode->val))
 					x = x->right;
 				else{
 					alloc.destroy(newNode);
@@ -317,7 +328,7 @@ public:
 
 			if (y == NULL)
 				root = newNode;
-			else if (comp(newNode->val.first, y->val.first))
+			else if (comp(newNode->val, y->val))
 				y->left = newNode;
 			else
 				y->right = newNode;
@@ -390,9 +401,9 @@ public:
 
 			//find the node to be deleted
 			while (node != nil){
-				if (comp(node->val.first, key.first))
+				if (comp(node->val, key))
 					node = node->right;
-				else if (comp(key.first, node->val.first))
+				else if (comp(key, node->val))
 					node = node->left;
 				else {
 					z = node;

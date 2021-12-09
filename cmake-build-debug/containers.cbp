@@ -82,7 +82,7 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/Users/dchin/Desktop/ft_containers/Map/main.cpp">
+		<Unit filename="/Users/dchin/Desktop/ft_containers/Vector/main.cpp">
 			<Option target="containers"/>
 		</Unit>
 		<Unit filename="/Users/dchin/Desktop/ft_containers/CMakeLists.txt">

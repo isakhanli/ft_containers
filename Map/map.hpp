@@ -25,8 +25,20 @@ namespace ft{
 		typedef typename Allocator::pointer									pointer;
 		typedef typename Allocator::const_pointer							const_pointer;
 
+
+		class value_compare /*: std::binary_function<value_type, value_type, bool>*/{
+		public:
+			typedef key_compare comp;
+//			value_compare(key_compare c) : comp(c) {}
+
+			bool operator()(const value_type& lhs, const value_type& rhs) const{
+				return comp()(lhs.first, rhs.first);
+			}
+		};
+
+
 	private:
-		typedef RBTree<value_type, key_type, key_compare, allocator_type> rbTree;
+		typedef RBTree<value_type, key_type, value_compare, allocator_type> rbTree;
 
 	public:
 		typedef typename rbTree::iterator 		 							iterator;
@@ -34,15 +46,7 @@ namespace ft{
 		typedef typename rbTree::reverse_iterator 							reverse_iterator;
 		typedef typename rbTree::const_reverse_iterator 					const_reverse_iterator;
 
-		class value_compare /*: std::binary_function<value_type, value_type, bool>*/{
-		public:
-			key_compare comp;
-//			value_compare(key_compare c) : comp(c) {}
 
-			bool operator()(const value_type& lhs, const value_type& rhs) const{
-				return comp()(lhs.first, rhs.first);
-			}
-		};
 
 
 	private:
@@ -178,8 +182,7 @@ namespace ft{
 		void erase(iterator first, iterator last){
 			while (first != last){
 				first = find(first->first);
-				erase(first->first);
-				first++;
+				erase((first++)->first);
 			}
 		}
 
@@ -188,7 +191,7 @@ namespace ft{
 		}
 
 		void swap(map& other){
-
+			_rbTree.swap(other._rbTree);
 		}
 
 
@@ -210,19 +213,19 @@ namespace ft{
 		}
 
 		iterator lower_bound(const Key& key){
-			return _rbTree.lower_bound(key);
+			return _rbTree.lower_bound(ft::make_pair(key, mapped_type()));
 		}
 
 		const_iterator lower_bound(const Key& key) const{
-			return _rbTree.lower_bound(key);
+			return _rbTree.lower_bound(ft::make_pair(key, mapped_type()));
 		}
 
 		iterator upper_bound(const Key& key){
-			return _rbTree.upper_bound(key);
+			return _rbTree.upper_bound(ft::make_pair(key, mapped_type()));
 		}
 
 		const_iterator upper_bound(const Key& key) const{
-			return _rbTree.upper_bound(key);
+			return _rbTree.upper_bound(ft::make_pair(key, mapped_type()));
 		}
 
 		ft::pair<iterator, iterator> equal_range(const Key& key){

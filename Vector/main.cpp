@@ -465,15 +465,153 @@ void 	testOperators(){
 }
 
 
+
+class B {
+public:
+	char *l;
+	int i;
+	B():l(nullptr), i(1) {};
+	B(const int &ex) {
+		this->i = ex;
+		this->l = new char('a');
+	};
+	virtual ~B() {
+		delete this->l;
+		this->l = nullptr;
+	};
+};
+
+class A : public B {
+public:
+	A():B(){};
+	A(const B* ex){
+		this->l = new char(*(ex->l));
+		this->i = ex->i;
+		if (ex->i == -1) throw "n";
+	}
+	~A() {
+		delete this->l;
+		this->l = nullptr;
+	};
+};
+
+template <typename T>
+std::vector<int> insert_test_1(ft::vector<T> vector) {
+	std::vector<int> v;
+	vector.assign(20, 1);
+//	g_start1 = timer();
+	v.push_back(*(vector.insert(vector.end() - 5, 44)));
+//	g_end1 = timer();
+	v.push_back(vector.size());
+	v.push_back(vector.capacity());
+	std::unique_ptr<B> k2(new B(3));
+	std::unique_ptr<B> k3(new B(4));
+	std::unique_ptr<B> k4(new B(-1));
+	ft::vector<A> vv;
+	ft::vector<B*> v1;
+
+	v1.push_back(&(*k2));
+	v1.push_back(&(*k3));
+	v1.push_back(&(*k4));
+	try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+	catch (...) {
+		v.push_back(66);
+		v.push_back(vv.size());
+		v.push_back(vv.capacity());
+	}
+	return v;
+}
+
+template <typename T>
+std::vector<int> insert_test_2(std::vector<T> vector) {
+	std::vector<int> v;
+	vector.assign(20, 1);
+//	g_start1 = timer();
+	v.push_back(*(vector.insert(vector.end() - 5, 44)));
+//	g_end1 = timer();
+	v.push_back(vector.size());
+	v.push_back(vector.capacity());
+	std::unique_ptr<B> k2(new B(3));
+	std::unique_ptr<B> k3(new B(4));
+	std::unique_ptr<B> k4(new B(-1));
+	std::vector<A> vv;
+	std::vector<B*> v1;
+
+	v1.push_back(&(*k2));
+	v1.push_back(&(*k3));
+	v1.push_back(&(*k4));
+	try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
+	catch (...) {
+		v.push_back(66);
+		v.push_back(vv.size());
+		v.push_back(vv.capacity());
+	}
+	return v;
+}
+
+
+
+
+void test(){
+
+	ft::vector<int>a;
+
+	std::vector<int> b = insert_test_1(a);
+
+	std::vector<int>c;
+
+	std::vector<int> d = insert_test_2(c);
+
+
+	for (std::vector<int>::iterator it = b.begin(); it != b.end(); it++)
+		std::cout << *it << std::endl;
+
+	std::cout << "-------------\n";
+
+	for (std::vector<int>::iterator it = d.begin(); it != d.end(); it++)
+		std::cout << *it << std::endl;
+
+
+//	ft::vector<int> myVec;
+//	for (int i=0; i < 100; i++)
+//		myVec.push_back(i);
+//
+//	ft::vector<int>::iterator it = myVec.end();
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//	it--;
+//
+//	myVec.insert(it, 5555);
+
+
+}
+
+
 int main() {
 
-	testConstructors();
-	testIterators();
-	testElementAcess();
-	testCapacity();
-	testModifiers();
-	testOperators();
+//	testConstructors();
+//	testIterators();
+//	testElementAcess();
+//	testCapacity();
+//	testModifiers();
+//	testOperators();
 //	testPushBack();
-
+	test();
 
 }
