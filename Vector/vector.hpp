@@ -15,9 +15,9 @@ namespace ft{
 	class vector{
 
 
-		/* * * * * * * * * * * * * * *
-		* 		MEMBER TYPES
-		* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			* 		Member Types
+			* * * * * * * * * * * * * * */
 
 	public:
 		typedef T												value_type;
@@ -34,9 +34,10 @@ namespace ft{
 		typedef std::size_t										size_type;
 
 
-		/* * * * * * * * * * * * * * *
-		* 		PRIVATE MEMBERS
-		* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			* 		Private Members
+			* * * * * * * * * * * * * * */
+
 
 	private:
 		value_type* 	_data;
@@ -44,27 +45,27 @@ namespace ft{
 		size_type		_capacity;
 		allocator_type	alloc;
 
-		/* * * * * * * * * * * * * * *
-		* 		CONSTRUCTORS
-		* * * * * * * * * * * * * * */
+
+			/* * * * * * * * * * * * * * *
+			* 		Constructors
+			* * * * * * * * * * * * * * */
+
 
 	public:
-		//DEFAULT
-		explicit vector (const allocator_type& alloc = allocator_type()):
-		_size(0), _capacity(0), alloc(alloc), _data(NULL){}
 
-		//FILL
-		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):
-		_size(n), _capacity(n), alloc(alloc){
+		explicit vector (const allocator_type& alloc = allocator_type())
+		:_data(NULL), _size(0), _capacity(0), alloc(alloc){}
+
+		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+		:_size(n), _capacity(n), alloc(alloc){
 			_data = this->alloc.allocate(_size);
 			for (size_type i = 0; i < n; i++)
 				this->alloc.construct(_data + i, val);
 		}
 
-		//RANGE
 		template <class InputIterator>
 		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
-				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) :alloc(alloc){
+				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = 0) : alloc(alloc){
 			size_type len = last - first;
 			_size = len;
 			_capacity = len;
@@ -76,9 +77,8 @@ namespace ft{
 			}
 		}
 
-		//COPY
 		vector (const vector &copy)
-			: _capacity(copy._capacity), _size(copy._size), alloc(copy.alloc){
+		: _size(copy._size), _capacity(copy._capacity), alloc(copy.alloc){
 			this->_data = alloc.allocate(_capacity);
 
 			for (size_type i = 0; i < _size; i++)
@@ -103,19 +103,14 @@ namespace ft{
 			return *this;
 		}
 
-		//DESTRUCTOR
 		~vector(){
-//			if (_data) {
-				clear();
-				alloc.deallocate(_data, _capacity);
-//			}
+			clear();
+			alloc.deallocate(_data, _capacity);
 		}
-
 
 		allocator_type get_allocator() const{
 			return alloc;
 		}
-
 
 		void assign (size_type count, const value_type& val){
 			clear();
@@ -128,7 +123,6 @@ namespace ft{
 				alloc.construct(_data + i, val);
 			_size = count;
 		}
-
 
 		template <class InputIt>
 		void assign (InputIt first, InputIt last,
@@ -150,11 +144,9 @@ namespace ft{
 		}
 
 
-
-
-		/* * * * * * * * * * * * * * *
-		 * 			ITERATORS
-		 * * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			 * 			Iterators
+			 * * * * * * * * * * * * * * */
 
 
 		iterator begin() { return iterator(_data); }
@@ -170,9 +162,9 @@ namespace ft{
 		const_reverse_iterator rend() const{ return const_reverse_iterator(begin()); }
 
 
-		/* * * * * * * * * * * * * * *
-		 * 	ELEMENT ACCESS METHODS
-		 * * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			 * 		Element Access
+			 * * * * * * * * * * * * * * */
 
 		reference at(size_type pos){
 			if (!(pos < size()))
@@ -219,10 +211,10 @@ namespace ft{
 		}
 
 
+			/* * * * * * * * * * * * * * *
+			 * 			Capacity
+			 * * * * * * * * * * * * * * */
 
-		/* * * * * * * * * * * * * * *
-		 * 			CAPACITY
-		 * * * * * * * * * * * * * * */
 
 		bool empty() const{
 			return (_size == 0);
@@ -236,7 +228,6 @@ namespace ft{
 			return _capacity;
 		}
 
-		//need to check
 		size_type max_size() const{
 			return alloc.max_size();
 		}
@@ -263,10 +254,9 @@ namespace ft{
 		}
 
 
-
-		/* * * * * * * * * * * * * * *
-		 * 			MODIFIERS
-		 * * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			 * 			MODIFIERS
+			 * * * * * * * * * * * * * * */
 
 
 		void clear(){
@@ -389,7 +379,7 @@ namespace ft{
 				}
 				_size += count;
 			}catch(...) {
-				for(int i = 0; i < count; i++)
+				for(size_type i = 0; i < count; i++)
 					alloc.destroy(newAlloc + i +index);
 				alloc.deallocate(newAlloc, new_cap);
 				throw;
@@ -430,9 +420,6 @@ namespace ft{
 			return iterator(_data + index);
 		}
 
-
-
-
 		void push_back (const value_type& val){
 			if (_size == _capacity) {
 				_capacity = (_capacity == 0) ? (_capacity + 1) : (_capacity * 2);
@@ -469,33 +456,13 @@ namespace ft{
 			std::swap(this->_size, x._size);
 			std::swap(this->_capacity, x._capacity);
 			std::swap(this->alloc, x.alloc);
-
-//			if (this == &x)
-//				return;
-
-//			value_type *temp_data = x._data;
-//			size_type temp_size = x._size;
-//			size_type temp_capacity = x._capacity;
-//			allocator_type temp_alloc = x.alloc;
-//
-//			x._data = this->_data;
-//			x._size = this->_size;
-//			x._capacity = this->_capacity;
-//			x.alloc = this->alloc;
-//
-//			this->_data = temp_data;
-//			this->_size = temp_size;
-//			this->_capacity = temp_capacity;
-//			this->alloc = temp_alloc;
-
-
 		}
 
 	};
 
-	/* * * * * * * * * * * * * * *
-	* 	NON MEMBER FUNCTIONS
-	* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			* 	NON MEMBER FUNCTIONS
+			* * * * * * * * * * * * * * */
 
 	template < class T, class Alloc >
 	bool operator==( const ft::vector<T,Alloc>& lhs, const ft::vector<T,Alloc>& rhs ){
@@ -537,7 +504,6 @@ namespace ft{
 	void swap(vector<T, Alloc> &x, vector<T, Alloc> &y){
 		x.swap(y);
 	}
-
 }
 
 #endif

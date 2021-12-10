@@ -10,13 +10,10 @@
 #include <memory>
 #include <iostream>
 
-
-
 enum Color{
 	BLACK,
 	RED
 };
-
 
 template <class T>
 class RBNode{
@@ -28,9 +25,11 @@ public:
 	value_type 		val;
 	int 			color;
 
-		/* * * * * * * * * * * * * * * * * * *
-		* 		   CANONICAL FORM
-		* * * * * * * * * * * * * * * * * * */
+
+			/* * * * * * * * * * * * * * * * * * *
+			* 		   Canonical Forn
+			* * * * * * * * * * * * * * * * * * */
+
 
 	RBNode(): left(NULL), right(NULL), parent(NULL), val(), color(BLACK){
 
@@ -41,7 +40,7 @@ public:
 	}
 
 	RBNode(const value_type &val, RBNode *left, RBNode *right, RBNode *parent, int color)
-		: left(left), right(right), val(val), color(color){
+		: left(left), right(right), parent(parent), val(val), color(color){
 
 	}
 
@@ -88,7 +87,7 @@ public:
 
 
 		/* * * * * * * * * * * * * * * * * * *
-		* 		   CANONICAL FORM
+		* 		  Canonical Form
 		* * * * * * * * * * * * * * * * * * */
 
 
@@ -97,10 +96,6 @@ public:
 		nil = alloc.allocate(1);
 		alloc.construct(nil, Node());
 		root = nil;
-//		nil->parent = nil;
-//		nil->left = root;
-//		nil->right = root;
-//		root->parent = nil;
 	}
 
 	~RBTree(){
@@ -172,10 +167,10 @@ public:
 		}
 
 
-
 		/* * * * * * * * * * * * * * * * * * *
-		* 		   OTHER FUNCTIONS
+		* 		   Other Methods
 		* * * * * * * * * * * * * * * * * * */
+
 
 		pointer find(const value_type &key) const{
 
@@ -221,7 +216,6 @@ public:
 
 
 		iterator lower_bound(const value_type& key){
-
 			pointer temp = root;
 			iterator result;
 
@@ -301,8 +295,9 @@ public:
 			return result;
 		}
 
+
 		/* * * * * * * * * * * * * * * * * * *
-		* 		          INSERT
+		* 		   	Insert
 		* * * * * * * * * * * * * * * * * * */
 
 
@@ -389,8 +384,9 @@ public:
 		root->color = BLACK;
 	}
 
+
 		/* * * * * * * * * * * * * * * * * * *
-		* 		     DELETE
+		* 		     Delete
 		* * * * * * * * * * * * * * * * * * */
 
 

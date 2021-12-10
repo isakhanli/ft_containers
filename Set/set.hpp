@@ -42,7 +42,7 @@ namespace ft{
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 	CONSTRUCTORS & OTHER METHODS
+			* 	Constructors & Other Methods
 			* * * * * * * * * * * * * * * * */
 
 
@@ -86,9 +86,11 @@ namespace ft{
 			return _alloc;
 		}
 
+
 			/* * * * * * * * * * * * * * * * *
-			* 		     ITERATORS
+			* 		     Iterators
 			* * * * * * * * * * * * * * * * */
+
 
 		iterator					begin() {return	_rbTree.begin(); }
 		const_iterator 				begin() const {return	_rbTree.begin(); }
@@ -101,7 +103,7 @@ namespace ft{
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 		     CAPACITY
+			* 		     Capacity
 			* * * * * * * * * * * * * * * * */
 
 
@@ -119,8 +121,9 @@ namespace ft{
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 		     MODIFIERS
+			* 		     Modifiers
 			* * * * * * * * * * * * * * * * */
+
 
 		void clear(){
 			_rbTree.clear();
@@ -166,8 +169,9 @@ namespace ft{
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 		     LOOKUP
+			* 		     Lookup
 			* * * * * * * * * * * * * * * * */
+
 
 		size_type count( const Key& key ) const{
 			return (find(key) != end());
@@ -207,8 +211,9 @@ namespace ft{
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 		     OBSERVERS
+			* 		     Observers
 			* * * * * * * * * * * * * * * * */
+
 
 		key_compare key_comp() const{
 			return key_compare();
@@ -217,55 +222,45 @@ namespace ft{
 		value_compare value_comp() const{
 			return key_compare();
 		}
-
-
-
 	};
 
 
 			/* * * * * * * * * * * * * * * * *
-			* 		NON MEMBER FUNCTIONS
+			* 		Non Member Functions
 			* * * * * * * * * * * * * * * * */
 
 		template< class Key, class Compare, class Alloc >
-		bool operator==( const ft::set<Key,Compare,Alloc>& lhs,
-						 const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator==(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return (lhs.size() == rhs.size() && ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator!=( const ft::set<Key,Compare,Alloc>& lhs,
-						 const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator!=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return !(lhs == rhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator<( const ft::set<Key,Compare,Alloc>& lhs,
-						const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator<(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator<=( const ft::set<Key,Compare,Alloc>& lhs,
-						 const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator<=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return !(rhs < lhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		bool operator>( const ft::set<Key,Compare,Alloc>& lhs,
-						const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator>(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return rhs < lhs;
 
 		}
 		template< class Key, class Compare, class Alloc >
-		bool operator>=( const ft::set<Key,Compare,Alloc>& lhs,
-						 const ft::set<Key,Compare,Alloc>& rhs ){
+		bool operator>=(const ft::set<Key,Compare,Alloc>& lhs, const ft::set<Key,Compare,Alloc>& rhs ){
 			return !(rhs > lhs);
 		}
 
 		template< class Key, class Compare, class Alloc >
-		void swap( ft::set<Key,Compare,Alloc>& lhs,
-				   ft::set<Key,Compare,Alloc>& rhs ){
+		void swap(ft::set<Key,Compare,Alloc>& lhs, ft::set<Key,Compare,Alloc>& rhs ){
 			lhs.swap(rhs);
 		}
 }

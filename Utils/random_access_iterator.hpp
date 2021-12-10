@@ -2,6 +2,7 @@
 #define ITERATOR_HPP
 
 #include <iterator>
+#include "iterator_traits.hpp"
 
 namespace ft {
 
@@ -9,7 +10,7 @@ namespace ft {
 	class random_access_iterator {
 
 		/* * * * * * * * * * * * * * *
-		* 		MEMBER TYPES
+		* 		Member Types
 		* * * * * * * * * * * * * * */
 
 	public:
@@ -18,12 +19,13 @@ namespace ft {
 		typedef T								value_type;
 		typedef std::ptrdiff_t					difference_type;
 		typedef std::random_access_iterator_tag iterator_category;
+		typedef T*								iterator_type;
 
 	private:
 		pointer ptr;
 
 		/* * * * * * * * * * * * * * *
-		* 		MEMBER FUNCTIONS
+		* 		Member Functions
 		* * * * * * * * * * * * * * */
 
 	public:
@@ -44,18 +46,14 @@ namespace ft {
 		}
 
 		// Const conversion
-
 		operator random_access_iterator<const value_type> () const {
 			return random_access_iterator<const value_type>(ptr);
 		}
 
-		// Base method
-
 		pointer base() const { return ptr; }
 
-
 		/*
-			 *a , a->m
+			*a , a->m
 		 */
 
 		pointer operator->() const { return ptr; }
@@ -63,8 +61,7 @@ namespace ft {
 		reference operator*() const { return *ptr; }
 
 		/*
-			 ++a, a++
-			Can be incremented
+		 	++a, a++
 		 */
 
 		random_access_iterator &operator++() {
@@ -94,7 +91,7 @@ namespace ft {
 		}
 
 		/*
-			 a + n, a -n, a - b
+			a + n, a -n, a - b
 		 */
 
 		random_access_iterator operator+(difference_type n) const {
@@ -114,9 +111,8 @@ namespace ft {
 			return ptr + it.ptr;
 		};
 
-
 		/*
-			 a += n, a -= n
+			a += n, a -= n
 		 */
 
 		random_access_iterator operator+=(difference_type n)  {
@@ -145,6 +141,7 @@ namespace ft {
 			* 	  NON MEMBER FUNCTIONS
 			* * * * * * * * * * * * * * */
 
+
 		/*
 			 n + a
 		*/
@@ -154,7 +151,6 @@ namespace ft {
 											const random_access_iterator<T> &rhs){
 		return (rhs + n);
 		}
-
 
 		/*
 			 a < b, a > b, a <= b, a >= b
@@ -195,9 +191,6 @@ namespace ft {
 					   ft::random_access_iterator<Iterator2> const &rhs){
 			return (lhs.base() <= rhs.base());
 		}
-
-
-
 }
 
 #endif

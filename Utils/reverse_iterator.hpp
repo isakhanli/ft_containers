@@ -8,9 +8,11 @@ namespace ft{
 	template<class Iter>
 	class reverse_iterator{
 
+
 		/* * * * * * * * * * * * * * *
-		* 		MEMBER TYPES
+		* 		Member Types
 		* * * * * * * * * * * * * * */
+
 
 	public:
 		typedef Iter													iterator_type;
@@ -23,9 +25,11 @@ namespace ft{
 	private:
 		iterator_type baseIter;
 
+
 		/* * * * * * * * * * * * * * *
-		* 	   MEMBER FUNCTIONS
+		* 	   Member Functions
 		* * * * * * * * * * * * * * */
+
 
 	public:
 
@@ -38,15 +42,13 @@ namespace ft{
 			baseIter = iter.base();
 		};
 
-		//=
-
 		template< class U >
-		reverse_iterator& operator=( const reverse_iterator<U>& other ){
+		reverse_iterator& operator=(const reverse_iterator<U> &other){
+			if (this == &other)
+				return *this;
+			this->baseIter = other.baseIter;
 			return *this;
 		}
-
-
-		// Base method
 
 		iterator_type base() const{
 			return baseIter;
@@ -115,7 +117,6 @@ namespace ft{
 			return reverse_iterator(base() + n);
 		};
 
-
 		/*
 			 a += n, a -= n
  		*/
@@ -133,8 +134,9 @@ namespace ft{
 
 		};
 
+
 			/* * * * * * * * * * * * * * *
-			* 	  NON MEMBER FUNCTIONS
+			* 	  Non Member Functions
 			* * * * * * * * * * * * * * */
 
 
@@ -191,7 +193,6 @@ namespace ft{
 			   		const reverse_iterator<Iterator>& rhs ){
 			return rhs.base() - lhs.base();
 		}
-
 }
 
 #endif

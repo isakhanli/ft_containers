@@ -16,14 +16,13 @@ namespace ft{
 
 
 	public:
-		typedef Pair       	value_type;
-		typedef Pair&  		reference;
-		typedef Pair* 		pointer;
-		typedef NodePointer	node_pointer;
-
-
+		typedef Pair       									value_type;
+		typedef Pair&  										reference;
+		typedef Pair* 										pointer;
+		typedef NodePointer									node_pointer;
 		typedef std::ptrdiff_t								difference_type;
 		typedef typename std::bidirectional_iterator_tag	iterator_category;
+		typedef Pair*										iterator_type;
 
 
 	public:
@@ -32,9 +31,9 @@ namespace ft{
 		node_pointer nil;
 
 
-		/* * * * * * * * * * * * * * *
-		*   	Canonical Form
-		* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			*   	Canonical Form
+			* * * * * * * * * * * * * * */
 
 
 	public:
@@ -46,6 +45,8 @@ namespace ft{
 			ptr(ptr), root(root), nil(nil){
 		}
 
+
+		//Const conversion
 		template <typename U, typename P1> rb_tree_iterator(const rb_tree_iterator<U,P1>& u) {
 			ptr = u.ptr;
 			root = u.root;
@@ -69,14 +70,9 @@ namespace ft{
 		};
 
 
-//		// const conversion
-//		operator	rb_tree_iterator<const T, Node> (void){
-//			return rb_tree_iterator<const T, Node>(ptr, root, nil);
-//		}
-
-		/* * * * * * * * * * * * * * *
-		*      Operator overloads
-		* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			*      Operator overloads
+			* * * * * * * * * * * * * * */
 
 
 		bool operator==(const rb_tree_iterator &rbt) const{
@@ -129,11 +125,11 @@ namespace ft{
 		}
 
 
-		/* * * * * * * * * * * * * * *
-		*     HELPER FUNCTIONS
-		* * * * * * * * * * * * * * */
+			/* * * * * * * * * * * * * * *
+			*     Helper Functions
+			* * * * * * * * * * * * * * */
 
-		//while (ndptr)
+
 		node_pointer getMax(node_pointer ndptr){
 			while (ndptr && ndptr->right != nil)
 				ndptr = ndptr->right;
