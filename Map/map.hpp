@@ -236,6 +236,7 @@ namespace ft{
 			return ft::make_pair(lower_bound(key), upper_bound(key));
 		}
 
+
 			/* * * * * * * * * * * * * * * * *
 			* 		  	  Observers
 			* * * * * * * * * * * * * * * * */
@@ -246,7 +247,7 @@ namespace ft{
 		}
 
 		value_compare value_comp() const{
-			return value_compare(key_comp());
+			return value_compare();
 		}
 	};
 

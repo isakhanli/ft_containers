@@ -5,8 +5,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "../colors.h"
-
 #include <iostream>
 
 void testConstructors(){
@@ -77,7 +75,7 @@ void testIterators(){
 	ft::vector<int>::iterator copyBeg = beginIt;
 	ft::vector<int>::iterator copyEnd(endIt);
 
-	for (ft::vector<int>::iterator it = copyBeg; it != endIt; it++)
+	for (ft::vector<int>::iterator it = copyBeg; it != copyEnd; it++)
 		std::cout << *it << " ";
 	std::cout << std::endl;
 
@@ -168,8 +166,8 @@ void testIterators(){
 
 	std::cout  << "- - - - - - - - - - - - - - - - - - - Const Reverse Iterator"  << std::endl;
 
-	ft::vector<int>::const_reverse_iterator constReverseBeginIt = a.rbegin();
-	ft::vector<int>::const_reverse_iterator constReverseEndIt = a.rend();
+//	ft::vector<int>::const_reverse_iterator constReverseBeginIt = a.rbegin();
+//	ft::vector<int>::const_reverse_iterator constReverseEndIt = a.rend();
 
 	for(ft::vector<int>::const_reverse_iterator constRevIt = a.rbegin(); constRevIt != a.rend(); constRevIt++) {
 //		*constRevIt = 1;
@@ -464,164 +462,6 @@ void 	testOperators(){
 
 }
 
-
-
-class B {
-public:
-	char *l;
-	int i;
-	B():l(nullptr), i(1) {};
-	B(const int &ex) {
-		this->i = ex;
-		this->l = new char('a');
-	};
-	virtual ~B() {
-		delete this->l;
-		this->l = nullptr;
-	};
-};
-
-class A : public B {
-public:
-	A():B(){};
-	A(const B* ex){
-		this->l = new char(*(ex->l));
-		this->i = ex->i;
-		if (ex->i == -1) throw "n";
-	}
-	~A() {
-		delete this->l;
-		this->l = nullptr;
-	};
-};
-
-template <typename T>
-std::vector<int> insert_test_1(ft::vector<T> vector) {
-	std::vector<int> v;
-	vector.assign(20, 1);
-//	g_start1 = timer();
-	v.push_back(*(vector.insert(vector.end() - 5, 44)));
-//	g_end1 = timer();
-	v.push_back(vector.size());
-	v.push_back(vector.capacity());
-	std::unique_ptr<B> k2(new B(3));
-	std::unique_ptr<B> k3(new B(4));
-	std::unique_ptr<B> k4(new B(-1));
-	ft::vector<A> vv;
-	ft::vector<B*> v1;
-
-	v1.push_back(&(*k2));
-	v1.push_back(&(*k3));
-	v1.push_back(&(*k4));
-	try { vv.insert(vv.begin(), v1.begin(), v1.end()); }
-	catch (...) {
-		v.push_back(66);
-		v.push_back(vv.size());
-		v.push_back(vv.capacity());
-	}
-	return v;
-}
-
-
-
-void iterator_traits_test() {
-	std::vector<std::string> res;
-	std::vector<std::string> res2;
-
-	res.push_back(typeid(std::vector<int>::iterator::iterator_category).name());
-	res.push_back(typeid(std::vector<int>::iterator::value_type).name());
-	res.push_back(typeid(std::vector<int>::iterator::difference_type).name());
-	res.push_back(typeid(std::vector<int>::iterator::iterator_type).name());
-	res.push_back(typeid(std::vector<int>::iterator::pointer).name());
-	res.push_back(typeid(std::vector<int>::iterator::reference).name());
-	res.push_back(typeid(std::vector<int>::reverse_iterator::iterator_category).name());
-	res.push_back(typeid(std::vector<int>::reverse_iterator::value_type).name());
-	res.push_back(typeid(std::vector<int>::reverse_iterator::difference_type).name());
-	res.push_back(typeid(std::vector<int>::reverse_iterator::pointer).name());
-	res.push_back(typeid(std::vector<int>::reverse_iterator::reference).name());
-
-	res2.push_back(typeid(ft::vector<int>::iterator::iterator_category).name());
-	res2.push_back(typeid(ft::vector<int>::iterator::value_type).name());
-	res2.push_back(typeid(ft::vector<int>::iterator::difference_type).name());
-	res2.push_back(typeid(ft::vector<int>::iterator::iterator_type).name());
-	res2.push_back(typeid(ft::vector<int>::iterator::pointer).name());
-	res2.push_back(typeid(ft::vector<int>::iterator::reference).name());
-	res2.push_back(typeid(ft::vector<int>::reverse_iterator::iterator_category).name());
-	res2.push_back(typeid(ft::vector<int>::reverse_iterator::value_type).name());
-	res2.push_back(typeid(ft::vector<int>::reverse_iterator::difference_type).name());
-	res2.push_back(typeid(ft::vector<int>::reverse_iterator::pointer).name());
-	res2.push_back(typeid(ft::vector<int>::reverse_iterator::reference).name());
-
-	for(std::vector<std::string>::iterator it = res.begin(); it != res.end(); it++)
-		std::cout << *it << std::endl;
-
-	std::cout << "----------------------\n";
-
-	for(std::vector<std::string>::iterator it = res2.begin(); it != res2.end(); it++)
-		std::cout << *it << std::endl;
-}
-
-
-void test(){
-
-		std::cout << ft::is_integral<char>() << std::endl;
-		std::cout << ft::is_integral<char>::value << std::endl;
-
-//		bool res = is_integral_test_();
-
-//		std::cout << res << std::endl;
-
-//	ft::vector<int>a;
-//
-//	std::vector<int> b = insert_test_1(a);
-//
-//	std::vector<int>c;
-//
-//	std::vector<int> d = insert_test_2(c);
-//
-//
-//	for (std::vector<int>::iterator it = b.begin(); it != b.end(); it++)
-//		std::cout << *it << std::endl;
-//
-//	std::cout << "-------------\n";
-//
-//	for (std::vector<int>::iterator it = d.begin(); it != d.end(); it++)
-//		std::cout << *it << std::endl;
-
-//	std::cout << (ft::is_integral<int>() == std::is_integral<int>()) << std::endl;
-
-
-//	ft::vector<int> myVec;
-//	for (int i=0; i < 100; i++)
-//		myVec.push_back(i);
-//
-//	ft::vector<int>::iterator it = myVec.end();
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//	it--;
-//
-//	myVec.insert(it, 5555);
-
-
-}
-
-
 int main() {
 
 //	testConstructors();
@@ -630,7 +470,23 @@ int main() {
 //	testCapacity();
 //	testModifiers();
 //	testOperators();
-//	testPushBack();
-//	test();
-	iterator_traits_test();
+
+//	std::vector<int> a;
+//	std::vector<int>::iterator it = a.begin();
+////	it.
+//
+//	ft::vector<int> b;
+//	ft::vector<int>::iterator it2 = b.begin();
+//	it.
+
+//	std::vector<int> v(4, 5);
+//	std::vector<int>::reverse_iterator my_rit2(v.end());
+//	std::vector<int>::const_reverse_iterator c_it, c_ob(v.end());
+//	c_it = my_rit2;
+
+	ft::vector<int> v(4, 5);
+	ft::vector<int>::reverse_iterator my_rit2(v.end());
+	ft::vector<int>::const_reverse_iterator c_it, c_ob(v.end());
+	c_it = my_rit2;
+
 }

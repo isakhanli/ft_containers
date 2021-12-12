@@ -27,7 +27,7 @@ public:
 
 
 			/* * * * * * * * * * * * * * * * * * *
-			* 		   Canonical Forn
+			* 		   Canonical Form
 			* * * * * * * * * * * * * * * * * * */
 
 
@@ -79,6 +79,8 @@ public:
 	typedef ft::reverse_iterator<iterator>									reverse_iterator;
 	typedef ft::reverse_iterator<const_iterator>							const_reverse_iterator;
 
+
+private:
 	pointer 			root;
 	pointer 			nil;
 	size_type			_size;
@@ -90,6 +92,8 @@ public:
 		* 		  Canonical Form
 		* * * * * * * * * * * * * * * * * * */
 
+
+public:
 
 	RBTree(key_compare const& cmp = key_compare()) : comp(cmp){
 		_size = 0;
@@ -395,7 +399,6 @@ public:
 			pointer x, y, z;
 			z = nil;
 
-			//find the node to be deleted
 			while (node != nil){
 				if (comp(node->val, key))
 					node = node->right;
@@ -407,7 +410,6 @@ public:
 				}
 			}
 
-			//not a node with such key
 			if (z == nil)
 				return false;
 
@@ -425,32 +427,9 @@ public:
 				originalColor = y->color;
 				x = y->right;
 
-				/*
-					 z = 200
-					 y = 300
-
-					 CASE 1
-								100
-								/ \
-							  50   200     	<- node to be deleted (200)
-									/\
-								 150   300
-					 CASE 2
-
-								100
-								 / \
-							   50   200     	<- node to be deleted (200)
-									/\
-								 150   300
-										/\
-									250	  350
-
-
-					 */
-
-				if (y->parent == z)  			// CASE 1
+				if (y->parent == z)
 					x->parent = y;
-				else{							// CASE 2
+				else{
 					rbReplace(y, y->right);
 					y->right = z->right;
 					y->right->parent = y;
@@ -484,7 +463,7 @@ public:
 					leftRotate(node->parent);
 					sibling = node->parent->right;
 				}
-				if (sibling->color == BLACK && sibling->right->color == BLACK){
+				if (sibling->left->color == BLACK && sibling->right->color == BLACK){
 					sibling->color = RED;
 					node = node->parent;
 				}else{
@@ -509,8 +488,8 @@ public:
 					sibling = node->parent->left;
 				}
 
-				if (sibling->left->color == BLACK && sibling->right->color == BLACK){
-					sibling->color = BLACK;
+				if (sibling->right->color == BLACK && sibling->right->color == BLACK){
+					sibling->color = RED;
 					node = node->parent;
 				}else{
 					if (sibling->left->color == BLACK){
@@ -574,46 +553,12 @@ public:
 		x->parent = y;
 	}
 
-	// to replace node to be deleted with one of its children
 	void rbReplace(pointer x, pointer y){
-
-		/*
-			Case 1
-		 	x = 100
-		 	y = 150
-		 			100 			150
-					/\       =>     /\
-				  50  150         50  150
-
-			Case 2
-		 	x = 50
-		 	y = 70
-
-		           100                 100
-		           /\                  /\
-		         50  150     =>      70  150
-		         /\                  /\
-		       20  70              20  70
-
-
-		    Case 3
-		 	x = 150
-		 	y = 170
-
-		           100                 100
-		           /\                  /\
-		         50  150     =>      70  170
-		              /\                  /\
-		           120  170           120   170
-
-		 */
-
-
-		if (x->parent == NULL)				//Case1
+		if (x->parent == NULL)
 			root = y;
-		else if (x == x->parent->left)		//Case2
+		else if (x == x->parent->left)
 			x->parent->left = y;
-		else								//Case3
+		else
 			x->parent->right = y;
 
 		y->parent = x->parent;

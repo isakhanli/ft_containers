@@ -54,10 +54,10 @@ namespace ft{
 	public:
 
 		explicit vector (const allocator_type& alloc = allocator_type())
-		:_data(NULL), _size(0), _capacity(0), alloc(alloc){}
+		: _data(NULL), _size(0), _capacity(0), alloc(alloc){}
 
 		explicit vector (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
-		:_size(n), _capacity(n), alloc(alloc){
+		: _size(n), _capacity(n), alloc(alloc){
 			_data = this->alloc.allocate(_size);
 			for (size_type i = 0; i < n; i++)
 				this->alloc.construct(_data + i, val);
@@ -104,7 +104,7 @@ namespace ft{
 		}
 
 		~vector(){
-			clear();
+//			clear();
 			alloc.deallocate(_data, _capacity);
 		}
 
@@ -235,6 +235,7 @@ namespace ft{
 		void reserve(size_type new_cap){
 			if (new_cap > max_size())
 				throw std::length_error("Length error");
+
 			if (new_cap < _capacity)
 				return;
 
@@ -260,10 +261,8 @@ namespace ft{
 
 
 		void clear(){
-			for (size_type i = _size; i > 0; i--)
-				alloc.destroy(_data + i);
-
-			_size = 0;
+			while (_size > 0)
+				pop_back();
 		}
 
 		iterator insert(iterator pos, const T& value){

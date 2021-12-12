@@ -3,6 +3,7 @@
 
 #include "../Vector/vector.hpp"
 
+
 namespace ft{
 
 	template <class T, class Container = ft::vector<T> >
@@ -92,36 +93,42 @@ namespace ft{
 
 
 		template< class U, class Cont >
-		friend bool operator==( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c == rhs.c;
-		}
+		friend bool operator==( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs );
 
 		template< class U, class Cont >
-		friend bool operator!=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c != rhs.c;
-		}
-
-		template< class U, class Cont >
-		friend bool operator<( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c < rhs.c;
-		}
-
-		template< class U, class Cont >
-		friend bool operator<=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c <= rhs.c;
-		}
-
-		template< class U, class Cont >
-		friend bool operator>( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c > rhs.c;
-		}
-
-		template< class U, class Cont >
-		friend bool operator>=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
-			return lhs.c >= rhs.c;
-		}
+		friend bool operator<( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs );
 
 	};
+
+	template< class U, class Cont >
+	bool operator==( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return lhs.c == rhs.c;
+	}
+
+	template< class U, class Cont >
+	bool operator!=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return !(lhs == rhs);
+	}
+
+	template< class U, class Cont >
+	bool operator<( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return lhs.c < rhs.c;
+	}
+
+	template< class U, class Cont >
+	bool operator<=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return !(rhs < lhs);
+	}
+
+	template< class U, class Cont >
+	bool operator>( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return rhs < lhs;
+	}
+
+	template< class U, class Cont >
+	bool operator>=( const ft::stack<U,Cont>& lhs, const ft::stack<U,Cont>& rhs ){
+		return !(lhs < rhs);
+	}
 }
 
 #endif

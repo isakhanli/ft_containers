@@ -1,5 +1,8 @@
-#ifndef ITERATOR_TRAITS_H
-#define ITERATOR_TRAITS_H
+#ifndef ITERATOR_TRAITS_HPP
+#define ITERATOR_TRAITS_HPP
+
+#include <cstddef>
+#include <iterator>
 
 namespace ft{
 
