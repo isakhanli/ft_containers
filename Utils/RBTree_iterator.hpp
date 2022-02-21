@@ -25,7 +25,7 @@ namespace ft{
 		typedef Pair*										iterator_type;
 
 
-	public:
+	private:
 		node_pointer ptr;
 		node_pointer root;
 		node_pointer nil;
@@ -48,9 +48,9 @@ namespace ft{
 
 		//Const conversion
 		template <typename U, typename P1> rb_tree_iterator(const rb_tree_iterator<U,P1>& u) {
-			ptr = u.ptr;
-			root = u.root;
-			nil = u.nil;
+			ptr = u.getPtr();
+			root = u.getRoot();
+			nil = u.getNil();
 		}
 
 		rb_tree_iterator(const rb_tree_iterator &copy){
@@ -60,9 +60,9 @@ namespace ft{
 		rb_tree_iterator &operator=(const rb_tree_iterator &rbt){
 			if (this == &rbt)
 				return *this;
-			this->ptr = rbt.ptr;
-			this->root = rbt.root;
-			this->nil = rbt.nil;
+			this->ptr = rbt.getPtr();
+			this->root = rbt.getRoot();
+			this->nil = rbt.getNil();
 			return *this;
 		}
 
@@ -166,8 +166,16 @@ namespace ft{
 			return tmp;
 		}
 
-		node_pointer getPtr(){
+		node_pointer getPtr() const{
 			return ptr;
+		}
+
+		node_pointer getRoot() const{
+			return root;
+		}
+
+		node_pointer getNil() const{
+			return nil;
 		}
 	};
 }

@@ -68,6 +68,11 @@ void testIterators(){
 	a.push_back(67);
 	a.push_back(93);
 	a.push_back(25);
+	a.push_back(89);
+	a.push_back(545);
+	a.push_back(781);
+	a.push_back(6321);
+	a.push_back(88);
 
 	ft::vector<int>::iterator beginIt = a.begin();
 	ft::vector<int>::iterator endIt = a.end();
@@ -83,7 +88,7 @@ void testIterators(){
 	int *base = beginIt.base();
 	std::cout << *base << std::endl;
 
-	std::cout  << "- - - - - - - - - - - - - - - - - - - Arithmetic Operators"  << std::endl;
+	std::cout  << "- - - - - - - - - - - - - - - - - - - Arithmetic Operatations"  << std::endl;
 
 	std::cout << *(beginIt++) << std::endl;
 	std::cout << *(++beginIt) << std::endl;
@@ -464,29 +469,10 @@ void 	testOperators(){
 
 int main() {
 
-//	testConstructors();
-//	testIterators();
-//	testElementAcess();
-//	testCapacity();
-//	testModifiers();
-//	testOperators();
-
-//	std::vector<int> a;
-//	std::vector<int>::iterator it = a.begin();
-////	it.
-//
-//	ft::vector<int> b;
-//	ft::vector<int>::iterator it2 = b.begin();
-//	it.
-
-//	std::vector<int> v(4, 5);
-//	std::vector<int>::reverse_iterator my_rit2(v.end());
-//	std::vector<int>::const_reverse_iterator c_it, c_ob(v.end());
-//	c_it = my_rit2;
-
-	ft::vector<int> v(4, 5);
-	ft::vector<int>::reverse_iterator my_rit2(v.end());
-	ft::vector<int>::const_reverse_iterator c_it, c_ob(v.end());
-	c_it = my_rit2;
-
+	testConstructors();
+	testIterators();
+	testElementAcess();
+	testCapacity();
+	testModifiers();
+	testOperators();
 }

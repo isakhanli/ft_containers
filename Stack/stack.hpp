@@ -34,7 +34,8 @@ namespace ft{
 		explicit stack(const Container& cont = Container()) : c(cont){
 		}
 
-		~stack(){
+		virtual ~stack(){
+
 		}
 
 		stack& operator=(const stack& other){
